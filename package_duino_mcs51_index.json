@@ -10,11 +10,7 @@
             },
             "platforms" : [
                 {
-<<<<<<< HEAD
                     "name": "Cocket Nova",
-=======
-                    "name": "CH55x SketchLab",
->>>>>>> origin/main
                     "architecture": "mcs51",
                     "version": "0.0.1",
                     "category": "Unit Electronics",
