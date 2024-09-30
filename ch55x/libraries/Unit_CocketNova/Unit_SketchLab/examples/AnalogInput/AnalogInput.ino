@@ -2,11 +2,7 @@
   Analog Input
 
   Demonstrates analog input by reading an analog sensor on analog pin P1.1 and
-<<<<<<< HEAD
-  turning on and off a light emitting diode(LED) connected to digital pin P3.4.
-=======
   turning on and off a light emitting diode(LED) connected to digital pin P3.3.
->>>>>>> origin/main
   The amount of time the LED will be on and off depends on the value obtained
   by analogRead().
 
@@ -33,11 +29,7 @@
 
   http://www.arduino.cc/en/Tutorial/AnalogInput
 */
-<<<<<<< HEAD
-#define LED_BUILTIN 34
-=======
 #define LED_BUILTIN 33
->>>>>>> origin/main
 
 int sensorPin = 11;    // select the input pin for the potentiometer. You may use P1.1, P1.4, P1.5 and P3.2
 int ledPin = LED_BUILTIN; // select the pin for the LED
