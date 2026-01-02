@@ -10,7 +10,7 @@
             },
             "platforms" : [
                 {
-                    "name": "Cocket Nova",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.1",
                     "category": "Unit Electronics",
@@ -36,7 +36,7 @@
                     "size": "100902"
                 },
                 { 
-                    "name": "Cocket Nova",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.2",
                     "category": "Unit Electronics",
@@ -62,7 +62,7 @@
                     "size": "154544"
                 },
                 { 
-                    "name": "Cocket Nova",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.3",
                     "category": "Unit Electronics",
@@ -88,7 +88,7 @@
                     "size": "149816"
                 },
                 { 
-                    "name": "Cocket Nova",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.4",
                     "category": "Unit Electronics",
