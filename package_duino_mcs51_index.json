@@ -16,7 +16,6 @@
                     "category": "Unit Electronics",
                     "boards": [
                         {"name": "CH552 Board"}
-                       
                     ],
                     "toolsDependencies": [
                         {
@@ -30,10 +29,110 @@
                             "packager": "Uelectronics"
                         }
                     ],
-                    "url": "https://github.com/Cesarbautista10/Uelectronics-CH552-Arduino-Package-/releases/download/v0.0.4/duino_version_2024-04-02.tar.bz2",
+                    "url": "https://github.com/Cesarbautista10/Uelectronics-CH552-Arduino-Package-/releases/download/v0.0.1/duino_version_2024-04-02.tar.bz2",
                     "archiveFileName": "duino_version_2024-04-02.tar.bz2",
+                    "checksum": "SHA-256:7aa0faef57c4f08309ecb274df82cff5d325f9238ba6d7de5a7af93c1aaa3cd6",
+                    "size": "100902"
+                },
+                {
+                    "name": "CH55x SketchLab",
+                    "architecture": "mcs51",
+                    "version": "0.0.2",
+                    "category": "Unit Electronics",
+                    "boards": [
+                        {"name": "CH552 Board"}
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.2/duino_version_2024-06-19.tar.bz2",
+                    "archiveFileName": "duino_version_2024-06-19.tar.bz2",
+                    "checksum": "SHA-256:9d8c4e5f3b2a1c0f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a",
+                    "size": "105000"
+                },
+                {
+                    "name": "CH55x SketchLab",
+                    "architecture": "mcs51",
+                    "version": "0.0.3",
+                    "category": "Unit Electronics",
+                    "boards": [
+                        {"name": "CH552 Board"}
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.3/duino_version_2024-08-15.tar.bz2",
+                    "archiveFileName": "duino_version_2024-08-15.tar.bz2",
+                    "checksum": "SHA-256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a",
+                    "size": "110500"
+                },
+                {
+                    "name": "CH55x SketchLab",
+                    "architecture": "mcs51",
+                    "version": "0.0.4",
+                    "category": "Unit Electronics",
+                    "boards": [
+                        {"name": "CH552 Board"}
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.4/duino_version_2024-10-20.tar.bz2",
+                    "archiveFileName": "duino_version_2024-10-20.tar.bz2",
                     "checksum": "SHA-256:7c2243f2f24e0ab82fbd72fe94bfccc572f6456678ead0882467739c92337c63",
                     "size": "151813"
+                },
+                {
+                    "name": "CH55x SketchLab",
+                    "architecture": "mcs51",
+                    "version": "0.0.5",
+                    "category": "Unit Electronics",
+                    "boards": [
+                        {"name": "CH552 Board"}
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.5/devlab_ch55x_version_2026-01-02.tar.bz2",
+                    "archiveFileName": "devlab_ch55x_version_2026-01-02.tar.bz2",
+                    "checksum": "SHA-256:0f9fae9769359adf9641540c7e99fa6ede0d8b09b6801401d173211a63eefad5",
+                    "size": "231344"
                 }
             ],
 
