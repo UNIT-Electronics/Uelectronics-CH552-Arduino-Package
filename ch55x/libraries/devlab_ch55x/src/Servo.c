@@ -8,12 +8,13 @@
  * published by the free software foundation.
  */
 
-#include "servo.h"
+#include <Arduino.h>
+#include "Servo.h"
 
 void digitalwritehighdirectlut(uint8_t pin);
 void digitalwritelowdirectlut(uint8_t pin);
 
-#if f_cpu > 24000000
+#if F_CPU > 24000000
 #error current clock is too fast for this version of library. please use 24m or lower.
 #endif
 
@@ -31,14 +32,14 @@ __xdata uint16_t servo_min = 1000;
 __xdata uint16_t servo_max = 2000;
 
 void timer2interrupt(void) __interrupt {
-  if (tf2) {
-    tf2 = 0;
+  if (TF2) {
+    TF2 = 0;
 
     __idata uint8_t listrcap2ptrcache = listrcap2ptr;
     __idata uint16_t listrcap2cache = listrcap2[listrcap2ptrcache];
 
-    rcap2l = listrcap2cache & 0xff;
-    rcap2h = listrcap2cache >> 8;
+    RCAP2L = listrcap2cache & 0xff;
+    RCAP2H = listrcap2cache >> 8;
 
     __idata uint8_t nextpincache = servopinnext;
     __idata uint8_t previouspincache = servopinprevious;
@@ -59,9 +60,9 @@ void timer2interrupt(void) __interrupt {
 
 void servo_wait_till_no_action() {
   while (1) {
-    et2 = 0;
+    ET2 = 0;
     __idata uint8_t listrcap2ptrcache = listrcap2ptr;
-    et2 = 1;
+    ET2 = 1;
     if (listrcap2ptrcache < 7) {
       break;
     }
@@ -70,7 +71,7 @@ void servo_wait_till_no_action() {
 
 void servo_init() {
   listrcap2limit = 8;
-  __idata uint16_t valuercap2_2_5ms = (65536 - f_cpu * 0.0025);
+  __idata uint16_t valuercap2_2_5ms = (65536 - F_CPU * 0.0025);
   for (__idata uint8_t i = 0; i < 8; i++) {
     listrcap2[i] = valuercap2_2_5ms;
   }
@@ -78,18 +79,18 @@ void servo_init() {
     servopin[i] = 9;
   }
 
-  t2con = 0x00;
-  // btmr_clk may be set by uart0, we keep it as is.
-  t2mod |= btmr_clk | bt2_clk; // use fsys for t2
+  T2CON = 0x00;
+  // bTMR_CLK may be set by uart0, we keep it as is.
+  T2MOD |= bTMR_CLK | bT2_CLK; // use fsys for t2
 
-  tl2 = 0;
-  th2 = 0;
-  rcap2l = 0;
-  rcap2h = 0;
+  TL2 = 0;
+  TH2 = 0;
+  RCAP2L = 0;
+  RCAP2H = 0;
 
-  et2 = 1;
+  ET2 = 1;
 
-  tr2 = 1;
+  TR2 = 1;
 }
 
 uint8_t servo_search_pin(uint8_t pin) {
@@ -120,7 +121,7 @@ bool servo_attach(uint8_t pin) {
     return false;
   }
   servo_wait_till_no_action();
-  __idata uint16_t valuercap2_1_5ms = (65536 - f_cpu * 0.0015);
+  __idata uint16_t valuercap2_1_5ms = (65536 - F_CPU * 0.0015);
   __idata uint8_t listrcap2limitcache = listrcap2limit;
   servopin[listrcap2limitcache] = pin;
   listrcap2[listrcap2limitcache] = valuercap2_1_5ms;
@@ -135,7 +136,7 @@ bool servo_detach(uint8_t pin) {
     return false;
   }
   servo_wait_till_no_action();
-  et2 = 0;
+  ET2 = 0;
   __idata uint8_t listrcap2limitcache = listrcap2limit;
   for (__idata uint8_t i = pinindex; i < listrcap2limitcache - 1; i++) {
     servopin[i] = servopin[i + 1];
@@ -143,7 +144,7 @@ bool servo_detach(uint8_t pin) {
   }
   listrcap2limitcache--;
   listrcap2limit = listrcap2limitcache;
-  et2 = 1;
+  ET2 = 1;
   return true;
 }
 
@@ -152,10 +153,10 @@ bool servo_writemicroseconds(uint8_t pin, __xdata uint16_t pulseus) {
   if (pinindex == 0) {
     return false;
   }
-  __idata uint16_t value = (65536 - ((f_cpu / 1000000) * pulseus));
-  et2 = 0;
+  __idata uint16_t value = (65536 - ((F_CPU / 1000000) * pulseus));
+  ET2 = 0;
   listrcap2[pinindex] = value;
-  et2 = 1;
+  ET2 = 1;
   return true;
 }
 
@@ -175,13 +176,13 @@ bool servo_write(uint8_t pin, __xdata int16_t value) {
     }
     uint16_t pulseus =
         servo_min + ((servo_max - servo_min) * ((uint32_t)value)) / 180;
-    pulsevalue = (65536 - ((f_cpu / 1000000) * (pulseus)));
+    pulsevalue = (65536 - ((F_CPU / 1000000) * (pulseus)));
   } else {
     // value is pulseus when value > 200
-    pulsevalue = (65536 - ((f_cpu / 1000000) * value));
+    pulsevalue = (65536 - ((F_CPU / 1000000) * value));
   }
-  et2 = 0;
+  ET2 = 0;
   listrcap2[pinindex] = pulsevalue;
-  et2 = 1;
+  ET2 = 1;
   return true;
 }
