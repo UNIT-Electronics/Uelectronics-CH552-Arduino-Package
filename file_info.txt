@@ -1,5 +1,5 @@
-Nombre del archivo comprimido: Cocket_Nova_duino_version_2024-09-30.tar.bz2
+Nombre del archivo comprimido: devlab_ch55x_version_2026-01-02.tar.bz2
 Datos del archivo comprimido:
-Tamaño del archivo: 139236 bytes
+Tamaño del archivo: 158303 bytes
 Tipo de archivo: bz2
-SHA256 del archivo: 01f98c83cb94ac742829b86348a5df289b6f9f9be0dd5195285e17de6bdedcec
+SHA256 del archivo: 6f3c39772cfdc0eaed7dffdf72258fb7dbb48b5ad0a94c2fc28794a0380ee944

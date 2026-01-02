@@ -1,179 +1,179 @@
 /*
- created by Deqing Sun for use with CH55xduino
+ created by deqing sun for use with ch55xduino
  */
 
-#define ARDUINO_MAIN
+#define arduino_main
 // clang-format off
 #include "wiring_private.h"
 #include "pins_arduino_include.h"
 // clang-format on
 
-#if defined(CH559)
-uint16_t analogRead(__data uint8_t pin)
+#if defined(ch559)
+uint16_t analogread(__data uint8_t pin)
 #else
-uint8_t analogRead(__data uint8_t pin)
+uint8_t analogread(__data uint8_t pin)
 #endif
 {
-  pin = analogPinToChannel(pin);
+  pin = analogpintochannel(pin);
 
-  if (pin == NOT_ANALOG)
+  if (pin == not_analog)
     return 0;
 
-#if defined(CH551) || defined(CH552)
-  ADC_CFG = bADC_EN | bADC_CLK;
+#if defined(ch551) || defined(ch552)
+  adc_cfg = badc_en | badc_clk;
 
-  ADC_CTRL = (ADC_CTRL & ~(0x03)) | (0x03 & pin);
+  adc_ctrl = (adc_ctrl & ~(0x03)) | (0x03 & pin);
 
-  ADC_START = 1;
+  adc_start = 1;
 
-  while (ADC_START)
+  while (adc_start)
     ;
 
-  return ADC_DATA;
-#elif defined(CH559)
+  return adc_data;
+#elif defined(ch559)
 
-  __data uint8_t pinMask = 1 << pin;
-  P1_IE &= ~(pinMask); // Close other data functions of P1 port, if only part of
+  __data uint8_t pinmask = 1 << pin;
+  p1_ie &= ~(pinmask); // close other data functions of p1 port, if only part of
                        // the sampling channel is used, set the rest to 1,
-                       // otherwise it will affect the IO function
-  ADC_SETUP |= bADC_POWER_EN; // ADC power enable
-  ADC_CK_SE =
-      (F_CPU / 6000000L);      // Set frequency division, make it similar to 6M
-  ADC_CTRL &= ~MASK_ADC_CYCLE; // Select manual sampling
-  ADC_CTRL &= ~(bADC_CHANN_MOD1 | bADC_CHANN_MOD0); // Manually select channel
-  ADC_CHANN = pinMask;                              // Gate channel 1
-  ADC_EX_SW |= bADC_RESOLUTION;                     // Sampling bits 11bit
-  // ADC_EX_SW &= ~bADC_RESOLUTION; //Sampling bits 10bit
-  delayMicroseconds(10);   // Optional, wait for the channel to switch
+                       // otherwise it will affect the io function
+  adc_setup |= badc_power_en; // adc power enable
+  adc_ck_se =
+      (f_cpu / 6000000l);      // set frequency division, make it similar to 6m
+  adc_ctrl &= ~mask_adc_cycle; // select manual sampling
+  adc_ctrl &= ~(badc_chann_mod1 | badc_chann_mod0); // manually select channel
+  adc_chann = pinmask;                              // gate channel 1
+  adc_ex_sw |= badc_resolution;                     // sampling bits 11bit
+  // adc_ex_sw &= ~badc_resolution; //sampling bits 10bit
+  delaymicroseconds(10);   // optional, wait for the channel to switch
                            // successfully
-  ADC_CTRL |= bADC_SAMPLE; // Manually generate sampling pulse
-  delayMicroseconds(5);
-  ADC_CTRL &= ~bADC_SAMPLE;
-  while ((ADC_STAT & bADC_IF_ACT) == 0)
-    ; // Non-interrupt mode, waiting for the completion of the acquisition
-  ADC_STAT |= bADC_IF_ACT;
-  __data uint16_t ADCValue = ADC_FIFO;
-  return ADCValue; // Return sample value
+  adc_ctrl |= badc_sample; // manually generate sampling pulse
+  delaymicroseconds(5);
+  adc_ctrl &= ~badc_sample;
+  while ((adc_stat & badc_if_act) == 0)
+    ; // non-interrupt mode, waiting for the completion of the acquisition
+  adc_stat |= badc_if_act;
+  __data uint16_t adcvalue = adc_fifo;
+  return adcvalue; // return sample value
 
 #else
   return 0;
 #endif
 }
 
-// Right now, PWM output only works on the pins with
-// hardware support.  These are defined in the appropriate
-// pins_*.c file.  For the rest of the pins, we default
+// right now, pwm output only works on the pins with
+// hardware support.  these are defined in the appropriate
+// pins_*.c file.  for the rest of the pins, we default
 // to digital output.
-void analogWrite(__data uint8_t pin, __xdata uint16_t val) {
-  // We need to make sure the PWM output is enabled for those pins
+void analogwrite(__data uint8_t pin, __xdata uint16_t val) {
+  // we need to make sure the pwm output is enabled for those pins
   // that support it, as we turn it off when digitally reading or
-  // writing with them.  Also, make sure the pin is in output mode
-  // for consistenty with Wiring, which doesn't require a pinMode
+  // writing with them.  also, make sure the pin is in output mode
+  // for consistenty with wiring, which doesn't require a pinmode
   // call for the analog output pins.
-#if defined(CH551) || defined(CH552)
-  pinMode(pin, OUTPUT);
+#if defined(ch551) || defined(ch552)
+  pinmode(pin, output);
   if (val == 0) {
-    digitalWrite(pin, LOW);
+    digitalwrite(pin, low);
   } else if (val >= 256) {
-    digitalWrite(pin, HIGH);
+    digitalwrite(pin, high);
   } else {
-    switch (digitalPinToPWM(pin)) {
-    case PIN_PWM1:
-      PIN_FUNC &= ~(bPWM1_PIN_X);
-      PWM_CTRL |= bPWM1_OUT_EN;
-      PWM_DATA1 = val;
+    switch (digitalpintopwm(pin)) {
+    case pin_pwm1:
+      pin_func &= ~(bpwm1_pin_x);
+      pwm_ctrl |= bpwm1_out_en;
+      pwm_data1 = val;
       break;
-    case PIN_PWM2:
-      PIN_FUNC &= ~(bPWM2_PIN_X);
-      PWM_CTRL |= bPWM2_OUT_EN;
-      PWM_DATA2 = val;
+    case pin_pwm2:
+      pin_func &= ~(bpwm2_pin_x);
+      pwm_ctrl |= bpwm2_out_en;
+      pwm_data2 = val;
       break;
-    case PIN_PWM1_:
-      PIN_FUNC |= (bPWM1_PIN_X);
-      PWM_CTRL |= bPWM1_OUT_EN;
-      PWM_DATA1 = val;
+    case pin_pwm1_:
+      pin_func |= (bpwm1_pin_x);
+      pwm_ctrl |= bpwm1_out_en;
+      pwm_data1 = val;
       break;
-    case PIN_PWM2_:
-      PIN_FUNC |= (bPWM2_PIN_X);
-      PWM_CTRL |= bPWM2_OUT_EN;
-      PWM_DATA2 = val;
+    case pin_pwm2_:
+      pin_func |= (bpwm2_pin_x);
+      pwm_ctrl |= bpwm2_out_en;
+      pwm_data2 = val;
       break;
-    case NOT_ON_PWM:
+    case not_on_pwm:
     default:
       if (val < 128) {
-        digitalWrite(pin, LOW);
+        digitalwrite(pin, low);
       } else {
-        digitalWrite(pin, HIGH);
+        digitalwrite(pin, high);
       }
     }
   }
-#elif defined(CH559)
-  pinMode(pin, OUTPUT);
+#elif defined(ch559)
+  pinmode(pin, output);
   if (val == 0) {
-    digitalWrite(pin, LOW);
+    digitalwrite(pin, low);
   } else if (val >= 256) {
-    digitalWrite(pin, HIGH);
+    digitalwrite(pin, high);
   } else {
-    uint8_t pwmPin = digitalPinToPWM(pin);
-    if (pwmPin != NOT_ON_PWM) {
-#if (F_CPU / (1000L * 255)) > 255
-      PWM_CK_SE = 255;
+    uint8_t pwmpin = digitalpintopwm(pin);
+    if (pwmpin != not_on_pwm) {
+#if (f_cpu / (1000l * 255)) > 255
+      pwm_ck_se = 255;
 #else
-      PWM_CK_SE = (F_CPU / (1000L * 255));
+      pwm_ck_se = (f_cpu / (1000l * 255));
 #endif
-      PWM_CYCLE = 255;
+      pwm_cycle = 255;
     }
-    switch (pwmPin) {
-    case PIN_PWM1:
-      PIN_FUNC &= ~(bPWM1_PIN_X); // CH559 only has 1 bit for 2 PWMs
-      PWM_CTRL |= bPWM_OUT_EN;
-      PWM_DATA = val;
+    switch (pwmpin) {
+    case pin_pwm1:
+      pin_func &= ~(bpwm1_pin_x); // ch559 only has 1 bit for 2 pwms
+      pwm_ctrl |= bpwm_out_en;
+      pwm_data = val;
       break;
-    case PIN_PWM2:
-      PIN_FUNC &= ~(bPWM1_PIN_X);
-      PWM_CTRL |= bPWM2_OUT_EN;
-      PWM_DATA2 = val;
+    case pin_pwm2:
+      pin_func &= ~(bpwm1_pin_x);
+      pwm_ctrl |= bpwm2_out_en;
+      pwm_data2 = val;
       break;
-    case PIN_PWM3:
-    case PIN_PWM3_:
-      if (pwmPin == PIN_PWM3) {
-        P1_DIR |= bPWM3; // push pull
-        P1_PU |= bPWM3;
-        PIN_FUNC &= ~bTMR3_PIN_X;
+    case pin_pwm3:
+    case pin_pwm3_:
+      if (pwmpin == pin_pwm3) {
+        p1_dir |= bpwm3; // push pull
+        p1_pu |= bpwm3;
+        pin_func &= ~btmr3_pin_x;
       } else {
-        P4_DIR |= bPWM3_; // push pull
-        P4_PU |= bPWM3_;
-        PIN_FUNC |= bTMR3_PIN_X;
+        p4_dir |= bpwm3_; // push pull
+        p4_pu |= bpwm3_;
+        pin_func |= btmr3_pin_x;
       }
-      T3_CTRL |= bT3_CLR_ALL;
-      T3_CTRL &= ~bT3_CLR_ALL;
-      T3_SETUP |= bT3_EN_CK_SE;
-      T3_CK_SE_L = (F_CPU / (1000L * 255)) & 0xFF;
-      T3_CK_SE_H = ((F_CPU / (1000L * 255)) >> 8) & 0xFF;
-      T3_SETUP &= ~bT3_EN_CK_SE;
-      T3_CTRL |= bT3_OUT_EN;
-      T3_END_L = 0xff;
-      T3_END_H = 0;
-      T3_FIFO_L = val;
-      T3_FIFO_H = 0;
-      T3_CTRL |= bT3_CNT_EN;
+      t3_ctrl |= bt3_clr_all;
+      t3_ctrl &= ~bt3_clr_all;
+      t3_setup |= bt3_en_ck_se;
+      t3_ck_se_l = (f_cpu / (1000l * 255)) & 0xff;
+      t3_ck_se_h = ((f_cpu / (1000l * 255)) >> 8) & 0xff;
+      t3_setup &= ~bt3_en_ck_se;
+      t3_ctrl |= bt3_out_en;
+      t3_end_l = 0xff;
+      t3_end_h = 0;
+      t3_fifo_l = val;
+      t3_fifo_h = 0;
+      t3_ctrl |= bt3_cnt_en;
       break;
-    case PIN_PWM1_:
-      PIN_FUNC |= (bPWM1_PIN_X);
-      PWM_CTRL |= bPWM_OUT_EN;
-      PWM_DATA = val;
+    case pin_pwm1_:
+      pin_func |= (bpwm1_pin_x);
+      pwm_ctrl |= bpwm_out_en;
+      pwm_data = val;
       break;
-    case PIN_PWM2_:
-      PIN_FUNC |= (bPWM1_PIN_X);
-      PWM_CTRL |= bPWM2_OUT_EN;
-      PWM_DATA2 = val;
+    case pin_pwm2_:
+      pin_func |= (bpwm1_pin_x);
+      pwm_ctrl |= bpwm2_out_en;
+      pwm_data2 = val;
       break;
-    case NOT_ON_PWM:
+    case not_on_pwm:
     default:
       if (val < 128) {
-        digitalWrite(pin, LOW);
+        digitalwrite(pin, low);
       } else {
-        digitalWrite(pin, HIGH);
+        digitalwrite(pin, high);
       }
     }
   }

@@ -1,5 +1,5 @@
 /*
- created by Deqing Sun for use with CH55xduino
+ created by deqing sun for use with ch55xduino
  */
 
 // clang-format off
@@ -10,43 +10,43 @@
 
 void eeprom_write_byte(__data uint8_t addr, __xdata uint8_t val) {
 
-#if defined(CH551) || defined(CH552)
+#if defined(ch551) || defined(ch552)
 
   if (addr >= 128) {
     return;
   }
 
-  SAFE_MOD = 0x55;
-  SAFE_MOD = 0xAA;        // Enter Safe mode
-  GLOBAL_CFG |= bDATA_WE; // Enable DataFlash write
-  SAFE_MOD = 0;           // Exit Safe mode
-  ROM_ADDR_H = DATA_FLASH_ADDR >> 8;
-  ROM_ADDR_L = addr << 1;
-  ROM_DATA_L = val;
-  if (ROM_STATUS & bROM_ADDR_OK) { // Valid access Address
-    ROM_CTRL = ROM_CMD_WRITE;      // Write
+  safe_mod = 0x55;
+  safe_mod = 0xaa;        // enter safe mode
+  global_cfg |= bdata_we; // enable dataflash write
+  safe_mod = 0;           // exit safe mode
+  rom_addr_h = data_flash_addr >> 8;
+  rom_addr_l = addr << 1;
+  rom_data_l = val;
+  if (rom_status & brom_addr_ok) { // valid access address
+    rom_ctrl = rom_cmd_write;      // write
   }
-  SAFE_MOD = 0x55;
-  SAFE_MOD = 0xAA;         // Enter Safe mode
-  GLOBAL_CFG &= ~bDATA_WE; // Disable DataFlash write
-  SAFE_MOD = 0;            // Exit Safe mode
+  safe_mod = 0x55;
+  safe_mod = 0xaa;         // enter safe mode
+  global_cfg &= ~bdata_we; // disable dataflash write
+  safe_mod = 0;            // exit safe mode
 
 #else
-  addr; // TBD
+  addr; // tbd
   val;
   return;
 #endif
 }
 
 uint8_t eeprom_read_byte(__data uint8_t addr) {
-#if defined(CH551) || defined(CH552)
+#if defined(ch551) || defined(ch552)
 
-  ROM_ADDR_H = DATA_FLASH_ADDR >> 8;
-  ROM_ADDR_L = addr << 1; // Addr must be even
-  ROM_CTRL = ROM_CMD_READ;
-  return ROM_DATA_L;
+  rom_addr_h = data_flash_addr >> 8;
+  rom_addr_l = addr << 1; // addr must be even
+  rom_ctrl = rom_cmd_read;
+  return rom_data_l;
 #else
-  addr; // TBD
+  addr; // tbd
   return 0;
 #endif
 }

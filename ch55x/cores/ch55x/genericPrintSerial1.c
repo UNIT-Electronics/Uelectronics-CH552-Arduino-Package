@@ -1,21 +1,21 @@
 /*
- created by Deqing Sun for use with CH55xduino
- need SDCC 13402 or higher version
+ created by deqing sun for use with ch55xduino
+ need sdcc 13402 or higher version
  */
 
-#include "Arduino.h"
+#include "arduino.h"
 
-void Serial1_print_i_func(__data long i) { Print_print_i(Serial1_write, i); }
-void Serial1_print_ib_func(__data long i, __xdata uint8_t base) {
-  Print_print_ib(Serial1_write, i, base);
+void serial1_print_i_func(__data long i) { print_print_i(serial1_write, i); }
+void serial1_print_ib_func(__data long i, __xdata uint8_t base) {
+  print_print_ib(serial1_write, i, base);
 }
-void Serial1_print_u_func(__data unsigned long u) {
-  Print_print_u(Serial1_write, u);
+void serial1_print_u_func(__data unsigned long u) {
+  print_print_u(serial1_write, u);
 }
-void Serial1_print_ub_func(__data unsigned long u, __xdata uint8_t base) {
-  Print_print_ib(Serial1_write, u, base);
+void serial1_print_ub_func(__data unsigned long u, __xdata uint8_t base) {
+  print_print_ib(serial1_write, u, base);
 }
-void Serial1_print_s_func(char *__data s) { Print_print_s(Serial1_write, s); }
-void Serial1_print_sn_func(char *__data s, __xdata uint8_t size) {
-  Print_print_sn(Serial1_write, s, size);
+void serial1_print_s_func(char *__data s) { print_print_s(serial1_write, s); }
+void serial1_print_sn_func(char *__data s, __xdata uint8_t size) {
+  print_print_sn(serial1_write, s, size);
 }

@@ -1,8 +1,8 @@
-#include <Arduino.h>
+#include <arduino.h>
 
-#if defined(CH551) || defined(CH552)
-void digitalWriteHighDirectLut(uint8_t pin) {
-  //'dpl' (LSB),'dph','b' & 'acc'
+#if defined(ch551) || defined(ch552)
+void digitalwritehighdirectlut(uint8_t pin) {
+  //'dpl' (lsb),'dph','b' & 'acc'
   pin;
   // clang-format off
   __asm__(
@@ -14,7 +14,7 @@ void digitalWriteHighDirectLut(uint8_t pin) {
     "    jmp @a+dptr                              \n"
 
     "direct_write_high_lut$:                      \n"
-    ";No PORT0                                    \n"
+    ";no port0                                    \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
@@ -26,27 +26,27 @@ void digitalWriteHighDirectLut(uint8_t pin) {
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     
-    ";PORT1                                       \n"
-    "    setb _P1_0                               \n"
+    ";port1                                       \n"
+    "    setb _p1_0                               \n"
     "    ret                                      \n"
-    "    setb _P1_1                               \n"
+    "    setb _p1_1                               \n"
     "    ret                                      \n"
-    "    setb _P1_2                               \n"
+    "    setb _p1_2                               \n"
     "    ret                                      \n"
-    "    setb _P1_3                               \n"
+    "    setb _p1_3                               \n"
     "    ret                                      \n"
-    "    setb _P1_4                               \n"
+    "    setb _p1_4                               \n"
     "    ret                                      \n"
-    "    setb _P1_5                               \n"
+    "    setb _p1_5                               \n"
     "    ret                                      \n"
-    "    setb _P1_6                               \n"
+    "    setb _p1_6                               \n"
     "    ret                                      \n"
-    "    setb _P1_7                               \n"
+    "    setb _p1_7                               \n"
     "    ret                                      \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     
-    ";No PORT2                                    \n"
+    ";no port2                                    \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
@@ -58,22 +58,22 @@ void digitalWriteHighDirectLut(uint8_t pin) {
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
 
-    ";PORT3                                       \n"
-    "    setb _P3_0                               \n"
+    ";port3                                       \n"
+    "    setb _p3_0                               \n"
     "    ret                                      \n"
-    "    setb _P3_1                               \n"
+    "    setb _p3_1                               \n"
     "    ret                                      \n"
-    "    setb _P3_2                               \n"
+    "    setb _p3_2                               \n"
     "    ret                                      \n"
-    "    setb _P3_3                               \n"
+    "    setb _p3_3                               \n"
     "    ret                                      \n"
-    "    setb _P3_4                               \n"
+    "    setb _p3_4                               \n"
     "    ret                                      \n"
-    "    setb _P3_5                               \n"
+    "    setb _p3_5                               \n"
     "    ret                                      \n"
-    "    setb _P3_6                               \n"
+    "    setb _p3_6                               \n"
     "    ret                                      \n"
-    "    setb _P3_7                               \n"
+    "    setb _p3_7                               \n"
     "    ret                                      \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"    
@@ -81,8 +81,8 @@ void digitalWriteHighDirectLut(uint8_t pin) {
   // clang-format on
 }
 
-void digitalWriteLowDirectLut(uint8_t pin) {
-  //'dpl' (LSB),'dph','b' & 'acc'
+void digitalwritelowdirectlut(uint8_t pin) {
+  //'dpl' (lsb),'dph','b' & 'acc'
   pin;
   // clang-format off
   __asm__(
@@ -94,7 +94,7 @@ void digitalWriteLowDirectLut(uint8_t pin) {
     "    jmp @a+dptr                              \n"
 
     "direct_write_low_lut$:                        \n"
-    ";No PORT0                                    \n"
+    ";no port0                                    \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
@@ -106,27 +106,27 @@ void digitalWriteLowDirectLut(uint8_t pin) {
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     
-    ";PORT1                                       \n"
-    "    clr _P1_0                                \n"
+    ";port1                                       \n"
+    "    clr _p1_0                                \n"
     "    ret                                      \n"
-    "    clr _P1_1                                \n"
+    "    clr _p1_1                                \n"
     "    ret                                      \n"
-    "    clr _P1_2                                \n"
+    "    clr _p1_2                                \n"
     "    ret                                      \n"
-    "    clr _P1_3                                \n"
+    "    clr _p1_3                                \n"
     "    ret                                      \n"
-    "    clr _P1_4                                \n"
+    "    clr _p1_4                                \n"
     "    ret                                      \n"
-    "    clr _P1_5                                \n"
+    "    clr _p1_5                                \n"
     "    ret                                      \n"
-    "    clr _P1_6                                \n"
+    "    clr _p1_6                                \n"
     "    ret                                      \n"
-    "    clr _P1_7                                \n"
+    "    clr _p1_7                                \n"
     "    ret                                      \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     
-    ";No PORT2                                    \n"
+    ";no port2                                    \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
@@ -138,22 +138,22 @@ void digitalWriteLowDirectLut(uint8_t pin) {
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
 
-    ";PORT3                                       \n"
-    "    clr _P3_0                                \n"
+    ";port3                                       \n"
+    "    clr _p3_0                                \n"
     "    ret                                      \n"
-    "    clr _P3_1                                \n"
+    "    clr _p3_1                                \n"
     "    ret                                      \n"
-    "    clr _P3_2                                \n"
+    "    clr _p3_2                                \n"
     "    ret                                      \n"
-    "    clr _P3_3                                \n"
+    "    clr _p3_3                                \n"
     "    ret                                      \n"
-    "    clr _P3_4                                \n"
+    "    clr _p3_4                                \n"
     "    ret                                      \n"
-    "    clr _P3_5                                \n"
+    "    clr _p3_5                                \n"
     "    ret                                      \n"
-    "    clr _P3_6                                \n"
+    "    clr _p3_6                                \n"
     "    ret                                      \n"
-    "    clr _P3_7                                \n"
+    "    clr _p3_7                                \n"
     "    ret                                      \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"    
