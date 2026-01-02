@@ -29,6 +29,8 @@
 #define _BV(X) (1 << (X))
 #endif
 
+#define LED_BUILTIN 11  // P1.7 - Built-in LED on CH552 board
+
 __code uint8_t digital_pin_to_pwm_PGM[] = {
     NOT_ON_PWM, // PIN00
     NOT_ON_PWM, NOT_ON_PWM, NOT_ON_PWM, NOT_ON_PWM,

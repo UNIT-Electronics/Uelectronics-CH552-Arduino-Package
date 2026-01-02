@@ -18,10 +18,6 @@
 // - to compile the firmware using the makefile, follow the instructions in the 
 //   .c file.
 
-#ifndef user_usb_ram
-#error "this firmware needs to be compiled with a user usb setting"
-#endif
-
 unsigned char _sdcc_external_startup (void) __nonbanked {
   return 0;
 }
