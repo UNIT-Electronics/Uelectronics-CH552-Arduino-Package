@@ -36,4 +36,6 @@ extern __code uint8_t digital_pin_to_channel_PGM[];
 #define digitalPinToPWM(P) (digital_pin_to_pwm_PGM[(P)])
 #define analogPinToChannel(P) (digital_pin_to_channel_PGM[(P)])
 
+#include "pins_arduino.h"
+
 #endif

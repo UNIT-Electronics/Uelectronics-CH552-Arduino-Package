@@ -1,0 +1,216 @@
+{
+    "packages": [
+        {
+            "name": "Uelectronics",
+            "maintainer": "Unit Electronics",
+            "websiteURL": "https://github.com/UNIT-Electronics",
+            "email": "r&d-innovation@uelectronics.com",
+            "help": {
+              "online": "https://uelectronics.com/"
+            },
+            "platforms" : [
+                {
+                    "name": "Devlab_CH55x",
+                    "architecture": "mcs51",
+                    "version": "0.0.1",
+                    "category": "Unit Electronics",
+                    "boards": [
+                        {"name": "CH552 Board"}
+                       
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/Cesarbautista10/Uelectronics-CH552-Arduino-Package-v3/releases/download/v0.0.1/duino_version_2024-06-19.tar.bz2",
+                    "archiveFileName": "duino_version_2024-06-19.tar.bz2",
+                    "checksum": "SHA-256:7aa0faef57c4f08309ecb274df82cff5d325f9238ba6d7de5a7af93c1aaa3cd6",
+                    "size": "100902"
+                },
+                { 
+                    "name": "Devlab_CH55x",
+                    "architecture": "mcs51",
+                    "version": "0.0.2",
+                    "category": "Unit Electronics",
+                    "boards": [
+                        {"name": "CH552 Board"}
+                       
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/Cesarbautista10/Uelectronics-CH552-Arduino-Package-v3/releases/download/v0.0.2/Cocket_Nova_duino_version_2024-06-19.tar.bz2",
+                    "archiveFileName": "Cocket_Nova_duino_version_2024-06-19.tar.bz2",
+                    "checksum": "SHA-256:cf6358f3b724bdc90ba755a48ee93c484066d8df50d4e2d0ed1ca76ec12e6c85",
+                    "size": "154544"
+                },
+                { 
+                    "name": "Devlab_CH55x",
+                    "architecture": "mcs51",
+                    "version": "0.0.3",
+                    "category": "Unit Electronics",
+                    "boards": [
+                        {"name": "CH552 Board"}
+                       
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/Cesarbautista10/Uelectronics-CH552-Arduino-Package-v3/releases/download/v0.0.3/Cocket_Nova_duino_version_2024-06-27.tar.bz2",
+                    "archiveFileName": "Cocket_Nova_duino_version_2024-06-27.tar.bz2",
+                    "checksum": "SHA-256:d5046d63aff63df8980561b76788a9fa32ff07a4bf7f01ab0a12eab042360859",
+                    "size": "149816"
+                },
+                { 
+                    "name": "Devlab_CH55x",
+                    "architecture": "mcs51",
+                    "version": "0.0.4",
+                    "category": "Unit Electronics",
+                    "boards": [
+                        {"name": "CH552 Board"}
+                       
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/0.0.2/Cocket_Nova_duino_version_2024-09-30.tar.bz2",
+                    "archiveFileName": "Cocket_Nova_duino_version_2024-09-30.tar.bz2",
+                    "checksum": "SHA-256:01f98c83cb94ac742829b86348a5df289b6f9f9be0dd5195285e17de6bdedcec",
+                    "size": "139236"
+                },
+                { 
+                    "name": "Devlab_CH55x",
+                    "architecture": "mcs51",
+                    "version": "0.0.5",
+                    "category": "Unit Electronics",
+                    "help": {
+                        "online": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package"
+                    },
+                    "boards": [
+                        {"name": "CH552 Board"}
+                       
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "MCS51Tools",
+                            "version": "2023.10.10",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.5/devlab_ch55x_version_2026-01-02.tar.bz2",
+                    "archiveFileName": "devlab_ch55x_version_2026-01-02.tar.bz2",
+                    "checksum": "SHA-256:2318162b099287ab4b1dfea23b4f402c68cdca57960f9b4c3fd29b751372a2a6",
+                    "size": "157861"
+                }
+            ],
+
+
+            "tools" : [
+                {
+                    "name": "MCS51Tools",
+                    "version": "2023.10.10",
+                    "systems": [
+                        {
+                            "host": "aarch64-linux-gnu",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_aarch64-2023.10.10.tar.bz2",
+                            "archiveFileName": "ch55xduino-tools_aarch64-2023.10.10.tar.bz2",
+                            "checksum": "SHA-256:986950420d1ae77b3dd6ebfa7c4cc7dfc6240f1c551c3d6dbec7158ff7a47017",
+                            "size": "18884"
+                        },{
+                            "host": "x86_64-pc-linux-gnu",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_linux64-2023.10.10.tar.bz2",
+                            "archiveFileName": "ch55xduino-tools_linux64-2023.10.10.tar.bz2",
+                            "checksum": "SHA-256:344d13237996f89150cf4b9f7ee9a675217f5bd83aad571162d0efedec3d7a2a",
+                            "size": "19333"
+                        },{
+                            "host": "x86_64-apple-darwin",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_macosx-2023.10.10.tar.bz2",
+                            "archiveFileName": "ch55xduino-tools_macosx-2023.10.10.tar.bz2",
+                            "checksum": "SHA-256:1dde8c8ae4d46748cd14e2983c79effeac5444365c9cea7a70230cf030863b09",
+                            "size": "54385"
+                        },{
+                            "host": "i686-mingw32",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_mingw32-2023.10.10.tar.bz2",
+                            "archiveFileName": "ch55xduino-tools_mingw32-2023.10.10.tar.bz2",
+                            "checksum": "SHA-256:423f8cf886bbb70a0fd388080a833c50c877da370fb48bd0d2c4d1d34ecec63f",
+                            "size": "698485"
+                        }
+                    ]
+                },
+                {
+                    "name": "sdcc",
+                    "version": "build.13407_4",
+                    "systems": [
+                        {
+                            "host": "aarch64-linux-gnu",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/sdcc-mcs51-aarch64-linux-gnu-20230423-13407_4.tar.bz2",
+                            "archiveFileName": "sdcc-mcs51-aarch64-linux-gnu-20230423-13407_4.tar.bz2",
+                            "checksum": "SHA-256:60a69726f3cc714b15905888df141f57035fdd6e64bf2f1c36ec5368c27cc6cd",
+                            "size": "7078403"
+                        },{
+                            "host": "x86_64-pc-linux-gnu",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/sdcc-mcs51-amd64-ubuntu20.04-linux2.5-20220422-13407_4.tar.bz2",
+                            "archiveFileName": "sdcc-mcs51-amd64-ubuntu20.04-linux2.5-20220422-13407_4.tar.bz2",
+                            "checksum": "SHA-256:d006621d0a55ec81e04bd3b8bbf6952f2cdd6e1f6400748eeea15ba11d613964",
+                            "size": "4438607"
+                        },{
+                            "host": "i686-mingw32",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/sdcc-mcs51-i586-mingw32msvc-20220422-13407_4.tar.bz2",
+                            "archiveFileName": "sdcc-mcs51-i586-mingw32msvc-20220422-13407_4.tar.bz2",
+                            "checksum": "SHA-256:dac0abbbe932997409cadc404fc0922f297f56ffd6cf309c70f9a2c1191c03bb",
+                            "size": "2776415"
+                        },{
+                            "host": "x86_64-apple-darwin",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/sdcc-mcs51-x86_64-apple-macosx-20220422-13407_4.tar.bz2",
+                            "archiveFileName": "sdcc-mcs51-x86_64-apple-macosx-20220422-13407_4.tar.bz2",
+                            "checksum": "SHA-256:95380334bf51cf8e29e2654b59c8840528f94dc7367d411bb66efe48d5260746",
+                            "size": "2988423"
+                        }
+                    ]
+                }
+            ]
+        }
+            
+        
+    ]
+}
