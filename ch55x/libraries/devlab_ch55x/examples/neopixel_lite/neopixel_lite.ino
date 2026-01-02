@@ -16,7 +16,9 @@
 // con tu pc.
 // - haga clic en "cargar" inmediatamente después.
 
-
+#if !defined(user_usb_ram) && !defined(USER_USB_RAM)
+#warning "Compile with USER USB settings for optimal functionality"
+#endif
 
 unsigned char _sdcc_external_startup (void) __nonbanked {
   return 0;
