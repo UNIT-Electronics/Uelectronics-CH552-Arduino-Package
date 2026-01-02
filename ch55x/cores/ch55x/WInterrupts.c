@@ -1,58 +1,58 @@
 /*
- created by deqing sun for use with ch55xduino
+ created by Deqing Sun for use with CH55xduino
  */
 
 #include "wiring_private.h"
 
 void nothing(void) {}
 
-__xdata voidFuncPtr intfunc[external_num_interrupts] = {
-#if external_num_interrupts > 1
+__xdata voidFuncPtr intFunc[EXTERNAL_NUM_INTERRUPTS] = {
+#if EXTERNAL_NUM_INTERRUPTS > 1
     nothing,
 #endif
-#if external_num_interrupts > 0
+#if EXTERNAL_NUM_INTERRUPTS > 0
     nothing,
 #endif
 };
 
-void attachinterrupt(__data uint8_t interruptnum,
-                     __xdata void (*userfunc)(void), __xdata uint8_t mode) {
-  if (interruptnum < external_num_interrupts) {
-    intfunc[interruptnum] = userfunc;
+void attachInterrupt(__data uint8_t interruptNum,
+                     __xdata void (*userFunc)(void), __xdata uint8_t mode) {
+  if (interruptNum < EXTERNAL_NUM_INTERRUPTS) {
+    intFunc[interruptNum] = userFunc;
 
-    // configure the interrupt mode (trigger on low input, any change, rising
-    // edge, or falling edge).  the mode constants were chosen to correspond
+    // Configure the interrupt mode (trigger on low input, any change, rising
+    // edge, or falling edge).  The mode constants were chosen to correspond
     // to the configuration bits in the hardware register, so we simply shift
     // the mode into place.
 
-    // enable the interrupt.
+    // Enable the interrupt.
 
-    switch (interruptnum) {
+    switch (interruptNum) {
     case 0:
-      it0 = mode;
-      ex0 = 1;
+      IT0 = mode;
+      EX0 = 1;
       break;
     case 1:
-      it1 = mode;
-      ex1 = 1;
+      IT1 = mode;
+      EX1 = 1;
       break;
     }
   }
 }
 
-void detachinterrupt(__data uint8_t interruptnum) {
-  if (interruptnum < external_num_interrupts) {
-    // disable the interrupt.  (we can't assume that interruptnum is equal
-    // to the number of the eimsk bit to clear, as this isn't true on the
-    // atmega8.  there, int0 is 6 and int1 is 7.)
-    switch (interruptnum) {
+void detachInterrupt(__data uint8_t interruptNum) {
+  if (interruptNum < EXTERNAL_NUM_INTERRUPTS) {
+    // Disable the interrupt.  (We can't assume that interruptNum is equal
+    // to the number of the EIMSK bit to clear, as this isn't true on the
+    // ATmega8.  There, INT0 is 6 and INT1 is 7.)
+    switch (interruptNum) {
     case 0:
-      ex0 = 0;
+      EX0 = 0;
       break;
     case 1:
-      ex1 = 0;
+      EX1 = 0;
       break;
     }
-    intfunc[interruptnum] = nothing;
+    intFunc[interruptNum] = nothing;
   }
 }

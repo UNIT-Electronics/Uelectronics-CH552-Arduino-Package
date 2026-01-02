@@ -1,8 +1,8 @@
 /*
- created by deqing sun for use with ch55xduino
+ created by Deqing Sun for use with CH55xduino
  */
 
-#define arduino_main
+#define ARDUINO_MAIN
 
 // clang-format off
 #include "wiring_private.h"
@@ -11,228 +11,228 @@
 #include "pins_arduino.h"   //only include once in core
 // clang-format on
 
-void pinmode(__data uint8_t pin,
-             __xdata uint8_t mode) // only p1 & p3 can set mode
+void pinMode(__data uint8_t pin,
+             __xdata uint8_t mode) // only P1 & P3 can set mode
 {
   //__data make sure the local varaibles reside in register in large model
-  __data uint8_t bit = digitalpintobitmask(pin);
-  __data uint8_t port = digitalpintoport(pin);
+  __data uint8_t bit = digitalPinToBitMask(pin);
+  __data uint8_t port = digitalPinToPort(pin);
 
-  if (port == not_a_pin)
+  if (port == NOT_A_PIN)
     return;
 
-  if (mode == input) {
-#if defined(ch551) || defined(ch552) || defined(ch549)
-    if (port == p1port) {
-      p1_mod_oc &= ~bit;
-      p1_dir_pu &= ~bit;
-    } else if (port == p3port) {
-      p3_mod_oc &= ~bit;
-      p3_dir_pu &= ~bit;
+  if (mode == INPUT) {
+#if defined(CH551) || defined(CH552) || defined(CH549)
+    if (port == P1PORT) {
+      P1_MOD_OC &= ~bit;
+      P1_DIR_PU &= ~bit;
+    } else if (port == P3PORT) {
+      P3_MOD_OC &= ~bit;
+      P3_DIR_PU &= ~bit;
     }
 #endif
-#if defined(ch549)
-    else if (port == p0port) {
-      p0_mod_oc &= ~bit;
-      p0_dir_pu &= ~bit;
-    } else if (port == p2port) {
-      p2_mod_oc &= ~bit;
-      p2_dir_pu &= ~bit;
-    } else if (port == p4port) {
-      p4_mod_oc &= ~bit;
-      p4_dir_pu &= ~bit;
+#if defined(CH549)
+    else if (port == P0PORT) {
+      P0_MOD_OC &= ~bit;
+      P0_DIR_PU &= ~bit;
+    } else if (port == P2PORT) {
+      P2_MOD_OC &= ~bit;
+      P2_DIR_PU &= ~bit;
+    } else if (port == P4PORT) {
+      P4_MOD_OC &= ~bit;
+      P4_DIR_PU &= ~bit;
     }
 #endif
-#if defined(ch559)
-    if (port == p0port) {
-      port_cfg &= ~bp0_oc;
-      p0_pu &= ~bit;
-      p0_dir &= ~bit;
-    } else if (port == p1port) {
-      p1_ie |= bit;
-      port_cfg &= ~bp1_oc;
-      p1_pu &= ~bit;
-      p1_dir &= ~bit;
-    } else if (port == p2port) {
-      port_cfg &= ~bp2_oc;
-      p2_pu &= ~bit;
-      p2_dir &= ~bit;
-    } else if (port == p3port) {
-      port_cfg &= ~bp3_oc;
-      p3_pu &= ~bit;
-      p3_dir &= ~bit;
-    } else if (port == p4port) { // p4 can not do oc
-      p4_pu &= ~bit;
-      p4_dir &= ~bit;
-    } // p5 can only do input
+#if defined(CH559)
+    if (port == P0PORT) {
+      PORT_CFG &= ~bP0_OC;
+      P0_PU &= ~bit;
+      P0_DIR &= ~bit;
+    } else if (port == P1PORT) {
+      P1_IE |= bit;
+      PORT_CFG &= ~bP1_OC;
+      P1_PU &= ~bit;
+      P1_DIR &= ~bit;
+    } else if (port == P2PORT) {
+      PORT_CFG &= ~bP2_OC;
+      P2_PU &= ~bit;
+      P2_DIR &= ~bit;
+    } else if (port == P3PORT) {
+      PORT_CFG &= ~bP3_OC;
+      P3_PU &= ~bit;
+      P3_DIR &= ~bit;
+    } else if (port == P4PORT) { // P4 can not do OC
+      P4_PU &= ~bit;
+      P4_DIR &= ~bit;
+    } // P5 can only do input
 #endif
-  } else if (mode == input_pullup) {
-#if defined(ch551) || defined(ch552) || defined(ch549)
-    if (port == p1port) {
-      p1_mod_oc |= bit;
-      p1_dir_pu |= bit;
-    } else if (port == p3port) {
-      p3_mod_oc |= bit;
-      p3_dir_pu |= bit;
+  } else if (mode == INPUT_PULLUP) {
+#if defined(CH551) || defined(CH552) || defined(CH549)
+    if (port == P1PORT) {
+      P1_MOD_OC |= bit;
+      P1_DIR_PU |= bit;
+    } else if (port == P3PORT) {
+      P3_MOD_OC |= bit;
+      P3_DIR_PU |= bit;
     }
 #endif
-#if defined(ch549)
-    else if (port == p0port) {
-      p0_mod_oc |= bit;
-      p0_dir_pu |= bit;
-    } else if (port == p2port) {
-      p2_mod_oc |= bit;
-      p2_dir_pu |= bit;
-    } else if (port == p4port) {
-      p4_mod_oc |= bit;
-      p4_dir_pu |= bit;
+#if defined(CH549)
+    else if (port == P0PORT) {
+      P0_MOD_OC |= bit;
+      P0_DIR_PU |= bit;
+    } else if (port == P2PORT) {
+      P2_MOD_OC |= bit;
+      P2_DIR_PU |= bit;
+    } else if (port == P4PORT) {
+      P4_MOD_OC |= bit;
+      P4_DIR_PU |= bit;
     }
 #endif
-#if defined(ch559)
-    if (port == p0port) {
-      port_cfg &= ~bp0_oc;
-      p0_pu |= bit;
-      p0_dir &= ~bit;
-    } else if (port == p1port) {
-      p1_ie |= bit;
-      port_cfg &= ~bp1_oc;
-      p1_pu |= bit;
-      p1_dir &= ~bit;
-    } else if (port == p2port) {
-      port_cfg &= ~bp2_oc;
-      p2_pu |= bit;
-      p2_dir &= ~bit;
-    } else if (port == p3port) {
-      port_cfg &= ~bp3_oc;
-      p3_pu |= bit;
-      p3_dir &= ~bit;
-    } else if (port == p4port) { // p4 can not do oc
-      p4_pu |= bit;
-      p4_dir &= ~bit;
-    } // p5 can only do input
+#if defined(CH559)
+    if (port == P0PORT) {
+      PORT_CFG &= ~bP0_OC;
+      P0_PU |= bit;
+      P0_DIR &= ~bit;
+    } else if (port == P1PORT) {
+      P1_IE |= bit;
+      PORT_CFG &= ~bP1_OC;
+      P1_PU |= bit;
+      P1_DIR &= ~bit;
+    } else if (port == P2PORT) {
+      PORT_CFG &= ~bP2_OC;
+      P2_PU |= bit;
+      P2_DIR &= ~bit;
+    } else if (port == P3PORT) {
+      PORT_CFG &= ~bP3_OC;
+      P3_PU |= bit;
+      P3_DIR &= ~bit;
+    } else if (port == P4PORT) { // P4 can not do OC
+      P4_PU |= bit;
+      P4_DIR &= ~bit;
+    } // P5 can only do input
 #endif
-  } else if (mode == output) {
-#if defined(ch551) || defined(ch552) || defined(ch549)
-    if (port == p1port) {
-      p1_mod_oc &= ~bit;
-      p1_dir_pu |= bit;
-    } else if (port == p3port) {
-      p3_mod_oc &= ~bit;
-      p3_dir_pu |= bit;
+  } else if (mode == OUTPUT) {
+#if defined(CH551) || defined(CH552) || defined(CH549)
+    if (port == P1PORT) {
+      P1_MOD_OC &= ~bit;
+      P1_DIR_PU |= bit;
+    } else if (port == P3PORT) {
+      P3_MOD_OC &= ~bit;
+      P3_DIR_PU |= bit;
     }
 #endif
-#if defined(ch549)
-    else if (port == p0port) {
-      p0_mod_oc &= ~bit;
-      p0_dir_pu |= bit;
-    } else if (port == p2port) {
-      p2_mod_oc &= ~bit;
-      p2_dir_pu |= bit;
-    } else if (port == p4port) {
-      p4_mod_oc &= ~bit;
-      p4_dir_pu |= bit;
+#if defined(CH549)
+    else if (port == P0PORT) {
+      P0_MOD_OC &= ~bit;
+      P0_DIR_PU |= bit;
+    } else if (port == P2PORT) {
+      P2_MOD_OC &= ~bit;
+      P2_DIR_PU |= bit;
+    } else if (port == P4PORT) {
+      P4_MOD_OC &= ~bit;
+      P4_DIR_PU |= bit;
     }
 #endif
-#if defined(ch559)
-    if (port == p0port) {
-      port_cfg &= ~bp0_oc;
-      p0_dir |= bit;
-    } else if (port == p1port) {
-      port_cfg &= ~bp1_oc;
-      p1_dir |= bit;
-    } else if (port == p2port) {
-      port_cfg &= ~bp2_oc;
-      p2_dir |= bit;
-    } else if (port == p3port) {
-      port_cfg &= ~bp3_oc;
-      p3_dir |= bit;
-    } else if (port == p4port) { // p4 can not do oc
-      p4_dir |= bit;
-    } // p5 can only do input
+#if defined(CH559)
+    if (port == P0PORT) {
+      PORT_CFG &= ~bP0_OC;
+      P0_DIR |= bit;
+    } else if (port == P1PORT) {
+      PORT_CFG &= ~bP1_OC;
+      P1_DIR |= bit;
+    } else if (port == P2PORT) {
+      PORT_CFG &= ~bP2_OC;
+      P2_DIR |= bit;
+    } else if (port == P3PORT) {
+      PORT_CFG &= ~bP3_OC;
+      P3_DIR |= bit;
+    } else if (port == P4PORT) { // P4 can not do OC
+      P4_DIR |= bit;
+    } // P5 can only do input
 #endif
-  } else if (mode == output_od) {
-#if defined(ch551) || defined(ch552) || defined(ch549)
-    if (port == p1port) {
-      p1_mod_oc |= bit;
-      p1_dir_pu &= ~bit;
-    } else if (port == p3port) {
-      p3_mod_oc |= bit;
-      p3_dir_pu &= ~bit;
+  } else if (mode == OUTPUT_OD) {
+#if defined(CH551) || defined(CH552) || defined(CH549)
+    if (port == P1PORT) {
+      P1_MOD_OC |= bit;
+      P1_DIR_PU &= ~bit;
+    } else if (port == P3PORT) {
+      P3_MOD_OC |= bit;
+      P3_DIR_PU &= ~bit;
     }
 #endif
-#if defined(ch549)
-    else if (port == p0port) {
-      p0_mod_oc |= bit;
-      p0_dir_pu &= ~bit;
-    } else if (port == p2port) {
-      p2_mod_oc |= bit;
-      p2_dir_pu &= ~bit;
-    } else if (port == p4port) {
-      p4_mod_oc |= bit;
-      p4_dir_pu &= ~bit;
+#if defined(CH549)
+    else if (port == P0PORT) {
+      P0_MOD_OC |= bit;
+      P0_DIR_PU &= ~bit;
+    } else if (port == P2PORT) {
+      P2_MOD_OC |= bit;
+      P2_DIR_PU &= ~bit;
+    } else if (port == P4PORT) {
+      P4_MOD_OC |= bit;
+      P4_DIR_PU &= ~bit;
     }
 #endif
-    // todo: oc mode for ch559
+    // todo: OC mode for CH559
   }
 }
 
-static void turnoffpwm(__data uint8_t pwm) {
-#if defined(ch551) || defined(ch552)
+static void turnOffPWM(__data uint8_t pwm) {
+#if defined(CH551) || defined(CH552)
   switch (pwm) {
-  case pin_pwm1:
-    if ((pin_func & bpwm1_pin_x) == 0) {
-      pwm_ctrl &= ~bpwm1_out_en;
+  case PIN_PWM1:
+    if ((PIN_FUNC & bPWM1_PIN_X) == 0) {
+      PWM_CTRL &= ~bPWM1_OUT_EN;
     }
     break;
-  case pin_pwm2:
-    if ((pin_func & bpwm2_pin_x) == 0) {
-      pwm_ctrl &= ~bpwm2_out_en;
+  case PIN_PWM2:
+    if ((PIN_FUNC & bPWM2_PIN_X) == 0) {
+      PWM_CTRL &= ~bPWM2_OUT_EN;
     }
     break;
-  case pin_pwm1_:
-    if ((pin_func & bpwm1_pin_x) != 0) {
-      pwm_ctrl &= ~bpwm1_out_en;
+  case PIN_PWM1_:
+    if ((PIN_FUNC & bPWM1_PIN_X) != 0) {
+      PWM_CTRL &= ~bPWM1_OUT_EN;
     }
     break;
-  case pin_pwm2_:
-    if ((pin_func & bpwm2_pin_x) != 0) {
-      pwm_ctrl &= ~bpwm2_out_en;
+  case PIN_PWM2_:
+    if ((PIN_FUNC & bPWM2_PIN_X) != 0) {
+      PWM_CTRL &= ~bPWM2_OUT_EN;
     }
     break;
   }
-#elif defined(ch559)
+#elif defined(CH559)
   switch (pwm) {
-  case pin_pwm1:
-    if ((pin_func & bpwm1_pin_x) == 0) {
-      pwm_ctrl &= ~bpwm_out_en;
+  case PIN_PWM1:
+    if ((PIN_FUNC & bPWM1_PIN_X) == 0) {
+      PWM_CTRL &= ~bPWM_OUT_EN;
     }
     break;
-  case pin_pwm2:
-    if ((pin_func & bpwm1_pin_x) == 0) {
-      pwm_ctrl &= ~bpwm2_out_en;
+  case PIN_PWM2:
+    if ((PIN_FUNC & bPWM1_PIN_X) == 0) {
+      PWM_CTRL &= ~bPWM2_OUT_EN;
     }
     break;
-  case pin_pwm1_:
-    if ((pin_func & bpwm1_pin_x) != 0) {
-      pwm_ctrl &= ~bpwm_out_en;
+  case PIN_PWM1_:
+    if ((PIN_FUNC & bPWM1_PIN_X) != 0) {
+      PWM_CTRL &= ~bPWM_OUT_EN;
     }
     break;
-  case pin_pwm2_:
-    if ((pin_func & bpwm1_pin_x) != 0) {
-      pwm_ctrl &= ~bpwm2_out_en;
+  case PIN_PWM2_:
+    if ((PIN_FUNC & bPWM1_PIN_X) != 0) {
+      PWM_CTRL &= ~bPWM2_OUT_EN;
     }
     break;
-  case pin_pwm3:
-    if ((pin_func & btmr3_pin_x) == 0) {
-      if (t3_ctrl & bt3_out_en) {
-        t3_ctrl &= ~(bt3_out_en | bt3_cnt_en);
+  case PIN_PWM3:
+    if ((PIN_FUNC & bTMR3_PIN_X) == 0) {
+      if (T3_CTRL & bT3_OUT_EN) {
+        T3_CTRL &= ~(bT3_OUT_EN | bT3_CNT_EN);
       }
     }
     break;
-  case pin_pwm3_:
-    if ((pin_func & btmr3_pin_x) != 0) {
-      if (t3_ctrl & bt3_out_en) {
-        t3_ctrl &= ~(bt3_out_en | bt3_cnt_en);
+  case PIN_PWM3_:
+    if ((PIN_FUNC & bTMR3_PIN_X) != 0) {
+      if (T3_CTRL & bT3_OUT_EN) {
+        T3_CTRL &= ~(bT3_OUT_EN | bT3_CNT_EN);
       }
     }
     break;
@@ -241,141 +241,141 @@ static void turnoffpwm(__data uint8_t pwm) {
   pwm;
   return;
 #endif
-  // todo: pwm mode for ch559
+  // todo: PWM mode for CH559
 }
 
-uint8_t digitalread(__data uint8_t pin) {
-  __data uint8_t pwm = digitalpintopwm(pin);
-  __data uint8_t bit = digitalpintobitmask(pin);
-  __data uint8_t port = digitalpintoport(pin);
+uint8_t digitalRead(__data uint8_t pin) {
+  __data uint8_t pwm = digitalPinToPWM(pin);
+  __data uint8_t bit = digitalPinToBitMask(pin);
+  __data uint8_t port = digitalPinToPort(pin);
 
-  if (port == not_a_pin)
-    return low;
+  if (port == NOT_A_PIN)
+    return LOW;
 
-  // if the pin that support pwm output, we need to turn it off
+  // If the pin that support PWM output, we need to turn it off
   // before getting a digital reading.
-  if (pwm != not_on_pwm)
-    turnoffpwm(pwm);
+  if (pwm != NOT_ON_PWM)
+    turnOffPWM(pwm);
 
-  __data uint8_t portbuf = 0;
+  __data uint8_t portBuf = 0;
 
   switch (port) {
-#if defined(ch551) || defined(ch552) || defined(ch549) || defined(ch559)
-  case p1port:
-    portbuf = p1;
+#if defined(CH551) || defined(CH552) || defined(CH549) || defined(CH559)
+  case P1PORT:
+    portBuf = P1;
     break;
-  case p2port:
-    portbuf = p2;
+  case P2PORT:
+    portBuf = P2;
     break;
-  case p3port:
-    portbuf = p3;
+  case P3PORT:
+    portBuf = P3;
     break;
 #endif
-#if defined(ch549)
-  case p0port:
-    portbuf = p0;
+#if defined(CH549)
+  case P0PORT:
+    portBuf = P0;
     break;
-  case p4port:
-    portbuf = p4;
+  case P4PORT:
+    portBuf = P4;
     break;
-  case p5port:
-    portbuf = p5;
+  case P5PORT:
+    portBuf = P5;
     break;
-#elif defined(ch559)
-  case p0port:
-    portbuf = p0;
+#elif defined(CH559)
+  case P0PORT:
+    portBuf = P0;
     break;
-  case p4port:
-    portbuf = p4_in;
+  case P4PORT:
+    portBuf = P4_IN;
     break;
-  case p5port:
-    portbuf = p5_in;
+  case P5PORT:
+    portBuf = P5_IN;
     break;
 #endif
   default:
     break;
   }
 
-  if (portbuf & bit)
-    return high;
-  return low;
+  if (portBuf & bit)
+    return HIGH;
+  return LOW;
 }
 
-void digitalwrite(__data uint8_t pin, __xdata uint8_t val) {
-  __data uint8_t pwm = digitalpintopwm(pin);
-  __data uint8_t bit = digitalpintobitmask(pin);
-  __data uint8_t port = digitalpintoport(pin);
+void digitalWrite(__data uint8_t pin, __xdata uint8_t val) {
+  __data uint8_t pwm = digitalPinToPWM(pin);
+  __data uint8_t bit = digitalPinToBitMask(pin);
+  __data uint8_t port = digitalPinToPort(pin);
 
-  // if the pin that support pwm output, we need to turn it off
+  // If the pin that support PWM output, we need to turn it off
   // before doing a digital write.
-  if (pwm != not_on_pwm)
-    turnoffpwm(pwm);
+  if (pwm != NOT_ON_PWM)
+    turnOffPWM(pwm);
 
-  // c pointers cannot be used to access the 8051's sfrs (special function
+  // C pointers cannot be used to access the 8051's SFRs (special function
   // registers).
 
-  __data uint8_t interrupton = ea;
-  ea = 0;
+  __data uint8_t interruptOn = EA;
+  EA = 0;
 
   switch (port) {
-#if defined(ch551) || defined(ch552) || defined(ch549) || defined(ch559)
-  case p1port:
-    if (val == low) {
-      p1 &= ~bit;
+#if defined(CH551) || defined(CH552) || defined(CH549) || defined(CH559)
+  case P1PORT:
+    if (val == LOW) {
+      P1 &= ~bit;
     } else {
-      p1 |= bit;
+      P1 |= bit;
     }
     break;
-  case p2port:
-    if (val == low) {
-      p2 &= ~bit;
+  case P2PORT:
+    if (val == LOW) {
+      P2 &= ~bit;
     } else {
-      p2 |= bit;
+      P2 |= bit;
     }
     break;
-  case p3port:
-    if (val == low) {
-      p3 &= ~bit;
+  case P3PORT:
+    if (val == LOW) {
+      P3 &= ~bit;
     } else {
-      p3 |= bit;
+      P3 |= bit;
     }
     break;
 #endif
-#if defined(ch549)
-  case p0port:
-    if (val == low) {
-      p0 &= ~bit;
+#if defined(CH549)
+  case P0PORT:
+    if (val == LOW) {
+      P0 &= ~bit;
     } else {
-      p0 |= bit;
+      P0 |= bit;
     }
     break;
-  case p4port:
-    if (val == low) {
-      p4 &= ~bit;
+  case P4PORT:
+    if (val == LOW) {
+      P4 &= ~bit;
     } else {
-      p4 |= bit;
+      P4 |= bit;
     }
     break;
-  case p5port:
-    if (val == low) {
-      p5 &= ~bit;
+  case P5PORT:
+    if (val == LOW) {
+      P5 &= ~bit;
     } else {
-      p5 |= bit;
+      P5 |= bit;
     }
     break;
-#elif defined(ch559)
-  case p0port:
-    if (val == low) {
-      p0 &= ~bit;
+#elif defined(CH559)
+  case P0PORT:
+    if (val == LOW) {
+      P0 &= ~bit;
     } else {
-      p0 |= bit;
+      P0 |= bit;
     }
     break;
-  case p4port:
-    if (val == low) {
-      p4_out &= ~bit;
+  case P4PORT:
+    if (val == LOW) {
+      P4_OUT &= ~bit;
     } else {
-      p4_out |= bit;
+      P4_OUT |= bit;
     }
     break;
 #endif
@@ -384,6 +384,6 @@ void digitalwrite(__data uint8_t pin, __xdata uint8_t val) {
     break;
   }
 
-  if (interrupton)
-    ea = 1;
+  if (interruptOn)
+    EA = 1;
 }

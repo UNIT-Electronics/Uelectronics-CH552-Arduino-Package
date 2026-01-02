@@ -1,100 +1,100 @@
 /*
-  main.cpp - main loop for arduino sketches
-  copyright (c) 2005-2013 arduino team.  all right reserved.
+  main.cpp - Main loop for Arduino sketches
+  Copyright (c) 2005-2013 Arduino Team.  All right reserved.
 
-  this library is free software; you can redistribute it and/or
-  modify it under the terms of the gnu lesser general public
-  license as published by the free software foundation; either
-  version 2.1 of the license, or (at your option) any later version.
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
 
-  this library is distributed in the hope that it will be useful,
-  but without any warranty; without even the implied warranty of
-  merchantability or fitness for a particular purpose.  see the gnu
-  lesser general public license for more details.
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
 
-  you should have received a copy of the gnu lesser general public
-  license along with this library; if not, write to the free software
-  foundation, inc., 51 franklin st, fifth floor, boston, ma  02110-1301  usa
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 // make sure to define prototypes for all used interrupts
-// usbinterrupt does not need to saves the context
-void usbinterrupt(void);
-// timer2interrupt needs to saves the context
-void timer2interrupt(void) __interrupt(int_no_tmr2);
-// gpiointerrupt needs to saves the context
-void gpiointerrupt(void) __interrupt(int_no_gpio);
+// USBInterrupt does not need to saves the context
+void USBInterrupt(void);
+// Timer2Interrupt NEEDs to saves the context
+void Timer2Interrupt(void) __interrupt(INT_NO_TMR2);
+// GPIOInterrupt NEEDs to saves the context
+void GPIOInterrupt(void) __interrupt(INT_NO_GPIO);
 
-// unsigned char runserialevent;
-void deviceusbinterrupt(void) __interrupt(int_no_usb) {
-  // usb interrupt service
-  usbinterrupt();
+// unsigned char runSerialEvent;
+void DeviceUSBInterrupt(void) __interrupt(INT_NO_USB) {
+  // USB interrupt service
+  USBInterrupt();
 }
 
 // clang-format off
-// 0x08~0x0f belongs to register bank 1
+// 0x08~0x0F belongs to register bank 1
 __idata __at (0x08) volatile uint32_t timer0_overflow_count = 0;
-__idata __at (0x0c) volatile uint8_t timer0_overflow_count_5th_byte = 0;
+__idata __at (0x0C) volatile uint8_t timer0_overflow_count_5th_byte = 0;
 // clang-format on
 
 // located in wiring.c, using register bank 1
-void timer0interrupt(void) __interrupt(int_no_tmr0) __using(1);
+void Timer0Interrupt(void) __interrupt(INT_NO_TMR0) __using(1);
 
-void uart0_isr(void) __interrupt(int_no_uart0) {
-  if (ri) {
-    uart0intrxhandler();
-    ri = 0;
+void Uart0_ISR(void) __interrupt(INT_NO_UART0) {
+  if (RI) {
+    uart0IntRxHandler();
+    RI = 0;
   }
-  if (ti) {
-    uart0inttxhandler();
-    ti = 0;
+  if (TI) {
+    uart0IntTxHandler();
+    TI = 0;
   }
 }
 
-void uart1_isr(void) __interrupt(int_no_uart1) {
-#if defined(ch551) || defined(ch552)
-  if (u1ri) {
-    uart1intrxhandler();
-    u1ri = 0;
+void Uart1_ISR(void) __interrupt(INT_NO_UART1) {
+#if defined(CH551) || defined(CH552)
+  if (U1RI) {
+    uart1IntRxHandler();
+    U1RI = 0;
   }
-  if (u1ti) {
-    uart1inttxhandler();
-    u1ti = 0;
+  if (U1TI) {
+    uart1IntTxHandler();
+    U1TI = 0;
   }
-#elif defined(ch559)
-  uint8_t interruptstatus = ser1_iir & 0x0f;
-  switch (interruptstatus) {
-  case u1_int_recv_rdy:
-    uart1intrxhandler();
+#elif defined(CH559)
+  uint8_t interruptStatus = SER1_IIR & 0x0f;
+  switch (interruptStatus) {
+  case U1_INT_RECV_RDY:
+    uart1IntRxHandler();
     break;
-  case u1_int_thr_empty:
-    uart1inttxhandler();
+  case U1_INT_THR_EMPTY:
+    uart1IntTxHandler();
     break;
   }
-#elif defined(ch549)
-  if (sif1 & bu1ri) {
-    uart1intrxhandler();
-    sif1 = bu1ri;
+#elif defined(CH549)
+  if (SIF1 & bU1RI) {
+    uart1IntRxHandler();
+    SIF1 = bU1RI;
   }
-  if (sif1 & bu1ti) {
-    uart1inttxhandler();
-    sif1 = bu1ti;
+  if (SIF1 & bU1TI) {
+    uart1IntTxHandler();
+    SIF1 = bU1TI;
   }
 #endif
 }
 
-typedef void (*voidfuncptr)(void);
-extern __xdata voidfuncptr intfunc[];
-void int0_isr(void) __interrupt(int_no_int0) { intfunc[0](); }
-void int1_isr(void) __interrupt(int_no_int1) { intfunc[1](); }
+typedef void (*voidFuncPtr)(void);
+extern __xdata voidFuncPtr intFunc[];
+void INT0_ISR(void) __interrupt(INT_NO_INT0) { intFunc[0](); }
+void INT1_ISR(void) __interrupt(INT_NO_INT1) { intFunc[1](); }
 
-#if defined(ch551) || defined(ch552)
-__xdata voidfuncptr touchkeyhandler = null;
-void touchkey_isr(void) __interrupt(int_no_tkey) {
-  if (touchkeyhandler != null) {
-    touchkeyhandler();
+#if defined(CH551) || defined(CH552)
+__xdata voidFuncPtr touchKeyHandler = NULL;
+void TOUCHKEY_ISR(void) __interrupt(INT_NO_TKEY) {
+  if (touchKeyHandler != NULL) {
+    touchKeyHandler();
   }
 }
 #endif
@@ -102,17 +102,17 @@ void touchkey_isr(void) __interrupt(int_no_tkey) {
 void main(void) {
   init();
 
-  //!!!initvariant();
+  //!!!initVariant();
 
   setup();
 
   for (;;) {
     loop();
     if (1) {
-#ifndef user_usb_ram
-      usbserial_flush();
+#ifndef USER_USB_RAM
+      USBSerial_flush();
 #endif
-      // serialevent();
+      // serialEvent();
     }
   }
 

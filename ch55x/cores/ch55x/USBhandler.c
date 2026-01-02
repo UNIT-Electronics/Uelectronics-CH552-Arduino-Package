@@ -1,448 +1,448 @@
 /*
- created by deqing sun for use with ch55xduino
+ created by Deqing Sun for use with CH55xduino
  */
 
-#ifndef user_usb_ram
+#ifndef USER_USB_RAM
 
 #include "USBhandler.h"
 
 #include "USBconstant.h"
 
-// cdc functions:
-void resetcdcparameters();
-void setlinecodinghandler();
-uint16_t getlinecodinghandler();
-void setcontrollinestatehandler();
-void usb_ep2_in();
-void usb_ep2_out();
+// CDC functions:
+void resetCDCParameters();
+void setLineCodingHandler();
+uint16_t getLineCodingHandler();
+void setControlLineStateHandler();
+void USB_EP2_IN();
+void USB_EP2_OUT();
 
 // clang-format off
-__xdata __at (ep0_addr) uint8_t ep0buffer[8];
-__xdata __at (ep1_addr) uint8_t ep1buffer[8];       //on page 47 of data sheet, the receive buffer need to be min(possible packet size+2,64)
-__xdata __at (ep2_addr) uint8_t ep2buffer[128];     //in and out buffer, must be even address
+__xdata __at (EP0_ADDR) uint8_t Ep0Buffer[8];
+__xdata __at (EP1_ADDR) uint8_t Ep1Buffer[8];       //on page 47 of data sheet, the receive buffer need to be min(possible packet size+2,64)
+__xdata __at (EP2_ADDR) uint8_t Ep2Buffer[128];     //IN and OUT buffer, must be even address
 // clang-format on
 
-__data uint16_t setuplen;
-__data uint8_t setupreq;
-volatile __xdata uint8_t usbconfig;
+__data uint16_t SetupLen;
+__data uint8_t SetupReq;
+volatile __xdata uint8_t UsbConfig;
 
-__code uint8_t *__data pdescr;
+__code uint8_t *__data pDescr;
 
-inline void nop_process(void) {}
+inline void NOP_Process(void) {}
 
-void usb_ep0_setup() {
-  __data uint8_t len = usb_rx_len;
-  if (len == (sizeof(usb_setup_req))) {
-    setuplen = ((uint16_t)usbsetupbuf->wlengthh << 8) | (usbsetupbuf->wlengthl);
-    len = 0; // default is success and upload 0 length
-    setupreq = usbsetupbuf->brequest;
-    if ((usbsetupbuf->brequesttype & usb_req_typ_mask) !=
-        usb_req_typ_standard) // not standard request
+void USB_EP0_SETUP() {
+  __data uint8_t len = USB_RX_LEN;
+  if (len == (sizeof(USB_SETUP_REQ))) {
+    SetupLen = ((uint16_t)UsbSetupBuf->wLengthH << 8) | (UsbSetupBuf->wLengthL);
+    len = 0; // Default is success and upload 0 length
+    SetupReq = UsbSetupBuf->bRequest;
+    if ((UsbSetupBuf->bRequestType & USB_REQ_TYP_MASK) !=
+        USB_REQ_TYP_STANDARD) // Not standard request
     {
 
-      // here is the commnunication starts, refer to usbfunctionsetup of usbtiny
+      // here is the commnunication starts, refer to usbFunctionSetup of USBtiny
       // or usb_setup in usbtiny
 
-      switch ((usbsetupbuf->brequesttype & usb_req_typ_mask)) {
-      case usb_req_typ_vendor: {
-        switch (setupreq) {
+      switch ((UsbSetupBuf->bRequestType & USB_REQ_TYP_MASK)) {
+      case USB_REQ_TYP_VENDOR: {
+        switch (SetupReq) {
         default:
-          len = 0xff; // command not supported
+          len = 0xFF; // command not supported
           break;
         }
         break;
       }
-      case usb_req_typ_class: {
-        switch (setupreq) {
-        case get_line_coding: // 0x21  currently configured
-          len = getlinecodinghandler();
+      case USB_REQ_TYP_CLASS: {
+        switch (SetupReq) {
+        case GET_LINE_CODING: // 0x21  currently configured
+          len = getLineCodingHandler();
           break;
-        case set_control_line_state: // 0x22  generates rs-232/v.24 style
+        case SET_CONTROL_LINE_STATE: // 0x22  generates RS-232/V.24 style
                                      // control signals
-          setcontrollinestatehandler();
+          setControlLineStateHandler();
           break;
-        case set_line_coding: // 0x20  configure
+        case SET_LINE_CODING: // 0x20  Configure
           break;
 
         default:
-          len = 0xff; // command not supported
+          len = 0xFF; // command not supported
           break;
         }
         break;
       }
       default:
-        len = 0xff; // command not supported
+        len = 0xFF; // command not supported
         break;
       }
 
-    } else // standard request
+    } else // Standard request
     {
-      switch (setupreq) // request ccftype
+      switch (SetupReq) // Request ccfType
       {
-      case usb_get_descriptor:
-        switch (usbsetupbuf->wvalueh) {
-        case 1: // device descriptor
-          pdescr = (__code uint8_t *)
-              devicedescriptor; // put device descriptor into outgoing buffer
-          len = sizeof(usb_descriptor_device_t);
+      case USB_GET_DESCRIPTOR:
+        switch (UsbSetupBuf->wValueH) {
+        case 1: // Device Descriptor
+          pDescr = (__code uint8_t *)
+              DeviceDescriptor; // Put Device Descriptor into outgoing buffer
+          len = sizeof(USB_Descriptor_Device_t);
           break;
-        case 2: // configure descriptor
-          pdescr = (__code uint8_t *)configurationdescriptor;
-          len = sizeof(usb_descriptor_configuration_t);
+        case 2: // Configure Descriptor
+          pDescr = (__code uint8_t *)ConfigurationDescriptor;
+          len = sizeof(USB_Descriptor_Configuration_t);
           break;
         case 3:
-          switch (usbsetupbuf->wvaluel) {
+          switch (UsbSetupBuf->wValueL) {
           case 0:
-            pdescr = (__code uint8_t *)languagedescriptor;
+            pDescr = (__code uint8_t *)LanguageDescriptor;
             break;
           case 1:
-            pdescr = (__code uint8_t *)manufacturerdescriptor;
+            pDescr = (__code uint8_t *)ManufacturerDescriptor;
             break;
           case 2:
-            pdescr = (__code uint8_t *)productdescriptor;
+            pDescr = (__code uint8_t *)ProductDescriptor;
             break;
           case 3:
-            pdescr = (__code uint8_t *)serialdescriptor;
+            pDescr = (__code uint8_t *)SerialDescriptor;
             break;
           case 4:
-            pdescr = (__code uint8_t *)cdcdescriptor;
+            pDescr = (__code uint8_t *)CDCDescriptor;
             break;
           default:
             len = 0xff;
             break;
           }
-          len = pdescr[0];
+          len = pDescr[0];
           break;
         default:
-          len = 0xff; // unsupported descriptors or error
+          len = 0xff; // Unsupported descriptors or error
           break;
         }
         if (len != 0xff) {
-          if (setuplen > len) {
-            setuplen = len; // limit length
+          if (SetupLen > len) {
+            SetupLen = len; // Limit length
           }
-          len = setuplen >= default_endp0_size
-                    ? default_endp0_size
-                    : setuplen; // transmit length for this packet
+          len = SetupLen >= DEFAULT_ENDP0_SIZE
+                    ? DEFAULT_ENDP0_SIZE
+                    : SetupLen; // transmit length for this packet
           for (__data uint8_t i = 0; i < len; i++) {
-            ep0buffer[i] = pdescr[i];
+            Ep0Buffer[i] = pDescr[i];
           }
-          setuplen -= len;
-          pdescr += len;
+          SetupLen -= len;
+          pDescr += len;
         }
         break;
-      case usb_set_address:
-        setuplen = usbsetupbuf->wvaluel; // save the assigned address
+      case USB_SET_ADDRESS:
+        SetupLen = UsbSetupBuf->wValueL; // Save the assigned address
         break;
-      case usb_get_configuration:
-        ep0buffer[0] = usbconfig;
-        if (setuplen >= 1) {
+      case USB_GET_CONFIGURATION:
+        Ep0Buffer[0] = UsbConfig;
+        if (SetupLen >= 1) {
           len = 1;
         }
         break;
-      case usb_set_configuration:
-        usbconfig = usbsetupbuf->wvaluel;
+      case USB_SET_CONFIGURATION:
+        UsbConfig = UsbSetupBuf->wValueL;
         break;
-      case usb_get_interface:
+      case USB_GET_INTERFACE:
         break;
-      case usb_set_interface:
+      case USB_SET_INTERFACE:
         break;
-      case usb_clear_feature: // clear feature
-        if ((usbsetupbuf->brequesttype & 0x1f) ==
-            usb_req_recip_device) // clear the device featuee.
+      case USB_CLEAR_FEATURE: // Clear Feature
+        if ((UsbSetupBuf->bRequestType & 0x1F) ==
+            USB_REQ_RECIP_DEVICE) // Clear the device featuee.
         {
-          if ((((uint16_t)usbsetupbuf->wvalueh << 8) | usbsetupbuf->wvaluel) ==
+          if ((((uint16_t)UsbSetupBuf->wValueH << 8) | UsbSetupBuf->wValueL) ==
               0x01) {
-            if (configurationdescriptor.config.configattributes & 0x20) {
+            if (ConfigurationDescriptor.Config.ConfigAttributes & 0x20) {
               // wake up
             } else {
-              len = 0xff; // failed
+              len = 0xFF; // Failed
             }
           } else {
-            len = 0xff; // failed
+            len = 0xFF; // Failed
           }
-        } else if ((usbsetupbuf->brequesttype & usb_req_recip_mask) ==
-                   usb_req_recip_endp) // endpoint
+        } else if ((UsbSetupBuf->bRequestType & USB_REQ_RECIP_MASK) ==
+                   USB_REQ_RECIP_ENDP) // endpoint
         {
-          switch (usbsetupbuf->windexl) {
+          switch (UsbSetupBuf->wIndexL) {
           case 0x84:
-            uep4_ctrl =
-                uep4_ctrl & ~(buep_t_tog | mask_uep_t_res) | uep_t_res_nak;
+            UEP4_CTRL =
+                UEP4_CTRL & ~(bUEP_T_TOG | MASK_UEP_T_RES) | UEP_T_RES_NAK;
             break;
           case 0x04:
-            uep4_ctrl =
-                uep4_ctrl & ~(buep_r_tog | mask_uep_r_res) | uep_r_res_ack;
+            UEP4_CTRL =
+                UEP4_CTRL & ~(bUEP_R_TOG | MASK_UEP_R_RES) | UEP_R_RES_ACK;
             break;
           case 0x83:
-            uep3_ctrl =
-                uep3_ctrl & ~(buep_t_tog | mask_uep_t_res) | uep_t_res_nak;
+            UEP3_CTRL =
+                UEP3_CTRL & ~(bUEP_T_TOG | MASK_UEP_T_RES) | UEP_T_RES_NAK;
             break;
           case 0x03:
-            uep3_ctrl =
-                uep3_ctrl & ~(buep_r_tog | mask_uep_r_res) | uep_r_res_ack;
+            UEP3_CTRL =
+                UEP3_CTRL & ~(bUEP_R_TOG | MASK_UEP_R_RES) | UEP_R_RES_ACK;
             break;
           case 0x82:
-            uep2_ctrl =
-                uep2_ctrl & ~(buep_t_tog | mask_uep_t_res) | uep_t_res_nak;
+            UEP2_CTRL =
+                UEP2_CTRL & ~(bUEP_T_TOG | MASK_UEP_T_RES) | UEP_T_RES_NAK;
             break;
           case 0x02:
-            uep2_ctrl =
-                uep2_ctrl & ~(buep_r_tog | mask_uep_r_res) | uep_r_res_ack;
+            UEP2_CTRL =
+                UEP2_CTRL & ~(bUEP_R_TOG | MASK_UEP_R_RES) | UEP_R_RES_ACK;
             break;
           case 0x81:
-            uep1_ctrl =
-                uep1_ctrl & ~(buep_t_tog | mask_uep_t_res) | uep_t_res_nak;
+            UEP1_CTRL =
+                UEP1_CTRL & ~(bUEP_T_TOG | MASK_UEP_T_RES) | UEP_T_RES_NAK;
             break;
           case 0x01:
-            uep1_ctrl =
-                uep1_ctrl & ~(buep_r_tog | mask_uep_r_res) | uep_r_res_ack;
+            UEP1_CTRL =
+                UEP1_CTRL & ~(bUEP_R_TOG | MASK_UEP_R_RES) | UEP_R_RES_ACK;
             break;
           default:
-            len = 0xff; // unsupported endpoint
+            len = 0xFF; // Unsupported endpoint
             break;
           }
         } else {
-          len = 0xff; // unsupported for non-endpoint
+          len = 0xFF; // Unsupported for non-endpoint
         }
         break;
-      case usb_set_feature: // set feature
-        if ((usbsetupbuf->brequesttype & 0x1f) ==
-            usb_req_recip_device) // set  the device featuee.
+      case USB_SET_FEATURE: // Set Feature
+        if ((UsbSetupBuf->bRequestType & 0x1F) ==
+            USB_REQ_RECIP_DEVICE) // Set  the device featuee.
         {
-          if ((((uint16_t)usbsetupbuf->wvalueh << 8) | usbsetupbuf->wvaluel) ==
+          if ((((uint16_t)UsbSetupBuf->wValueH << 8) | UsbSetupBuf->wValueL) ==
               0x01) {
-            if (configurationdescriptor.config.configattributes & 0x20) {
+            if (ConfigurationDescriptor.Config.ConfigAttributes & 0x20) {
               // suspend
 
-              // while ( xbus_aux & buart0_tx );    //wait till uart0 sending
-              // complete safe_mod = 0x55; safe_mod = 0xaa; wake_ctrl =
-              // bwak_by_usb | bwak_rxd0_lo | bwak_rxd1_lo; //wake up by usb or
-              // rxd0/1 signal pcon |= pd; //sleep safe_mod = 0x55; safe_mod =
-              // 0xaa; wake_ctrl = 0x00;
+              // while ( XBUS_AUX & bUART0_TX );    //Wait till uart0 sending
+              // complete SAFE_MOD = 0x55; SAFE_MOD = 0xAA; WAKE_CTRL =
+              // bWAK_BY_USB | bWAK_RXD0_LO | bWAK_RXD1_LO; //wake up by USB or
+              // RXD0/1 signal PCON |= PD; //sleep SAFE_MOD = 0x55; SAFE_MOD =
+              // 0xAA; WAKE_CTRL = 0x00;
             } else {
-              len = 0xff; // failed
+              len = 0xFF; // Failed
             }
           } else {
-            len = 0xff; // failed
+            len = 0xFF; // Failed
           }
-        } else if ((usbsetupbuf->brequesttype & 0x1f) ==
-                   usb_req_recip_endp) // endpoint
+        } else if ((UsbSetupBuf->bRequestType & 0x1F) ==
+                   USB_REQ_RECIP_ENDP) // endpoint
         {
-          if ((((uint16_t)usbsetupbuf->wvalueh << 8) | usbsetupbuf->wvaluel) ==
+          if ((((uint16_t)UsbSetupBuf->wValueH << 8) | UsbSetupBuf->wValueL) ==
               0x00) {
-            switch (((uint16_t)usbsetupbuf->windexh << 8) |
-                    usbsetupbuf->windexl) {
+            switch (((uint16_t)UsbSetupBuf->wIndexH << 8) |
+                    UsbSetupBuf->wIndexL) {
             case 0x84:
-              uep4_ctrl = uep4_ctrl & (~buep_t_tog) |
-                          uep_t_res_stall; // set endpoint4 in stall
+              UEP4_CTRL = UEP4_CTRL & (~bUEP_T_TOG) |
+                          UEP_T_RES_STALL; // Set endpoint4 IN STALL
               break;
             case 0x04:
-              uep4_ctrl = uep4_ctrl & (~buep_r_tog) |
-                          uep_r_res_stall; // set endpoint4 out stall
+              UEP4_CTRL = UEP4_CTRL & (~bUEP_R_TOG) |
+                          UEP_R_RES_STALL; // Set endpoint4 OUT Stall
               break;
             case 0x83:
-              uep3_ctrl = uep3_ctrl & (~buep_t_tog) |
-                          uep_t_res_stall; // set endpoint3 in stall
+              UEP3_CTRL = UEP3_CTRL & (~bUEP_T_TOG) |
+                          UEP_T_RES_STALL; // Set endpoint3 IN STALL
               break;
             case 0x03:
-              uep3_ctrl = uep3_ctrl & (~buep_r_tog) |
-                          uep_r_res_stall; // set endpoint3 out stall
+              UEP3_CTRL = UEP3_CTRL & (~bUEP_R_TOG) |
+                          UEP_R_RES_STALL; // Set endpoint3 OUT Stall
               break;
             case 0x82:
-              uep2_ctrl = uep2_ctrl & (~buep_t_tog) |
-                          uep_t_res_stall; // set endpoint2 in stall
+              UEP2_CTRL = UEP2_CTRL & (~bUEP_T_TOG) |
+                          UEP_T_RES_STALL; // Set endpoint2 IN STALL
               break;
             case 0x02:
-              uep2_ctrl = uep2_ctrl & (~buep_r_tog) |
-                          uep_r_res_stall; // set endpoint2 out stall
+              UEP2_CTRL = UEP2_CTRL & (~bUEP_R_TOG) |
+                          UEP_R_RES_STALL; // Set endpoint2 OUT Stall
               break;
             case 0x81:
-              uep1_ctrl = uep1_ctrl & (~buep_t_tog) |
-                          uep_t_res_stall; // set endpoint1 in stall
+              UEP1_CTRL = UEP1_CTRL & (~bUEP_T_TOG) |
+                          UEP_T_RES_STALL; // Set endpoint1 IN STALL
               break;
             case 0x01:
-              uep1_ctrl = uep1_ctrl & (~buep_r_tog) |
-                          uep_r_res_stall; // set endpoint1 out stall
+              UEP1_CTRL = UEP1_CTRL & (~bUEP_R_TOG) |
+                          UEP_R_RES_STALL; // Set endpoint1 OUT Stall
             default:
-              len = 0xff; // failed
+              len = 0xFF; // Failed
               break;
             }
           } else {
-            len = 0xff; // failed
+            len = 0xFF; // Failed
           }
         } else {
-          len = 0xff; // failed
+          len = 0xFF; // Failed
         }
         break;
-      case usb_get_status:
-        ep0buffer[0] = 0x00;
-        ep0buffer[1] = 0x00;
-        if (setuplen >= 2) {
+      case USB_GET_STATUS:
+        Ep0Buffer[0] = 0x00;
+        Ep0Buffer[1] = 0x00;
+        if (SetupLen >= 2) {
           len = 2;
         } else {
-          len = setuplen;
+          len = SetupLen;
         }
         break;
       default:
-        len = 0xff; // failed
+        len = 0xff; // Failed
         break;
       }
     }
   } else {
-    len = 0xff; // wrong packet length
+    len = 0xff; // Wrong packet length
   }
   if (len == 0xff) {
-    setupreq = 0xff;
-    uep0_ctrl =
-        buep_r_tog | buep_t_tog | uep_r_res_stall | uep_t_res_stall; // stall
+    SetupReq = 0xFF;
+    UEP0_CTRL =
+        bUEP_R_TOG | bUEP_T_TOG | UEP_R_RES_STALL | UEP_T_RES_STALL; // STALL
   } else if (len <=
-             default_endp0_size) // tx data to host or send 0-length packet
+             DEFAULT_ENDP0_SIZE) // Tx data to host or send 0-length packet
   {
-    uep0_t_len = len;
-    uep0_ctrl = buep_r_tog | buep_t_tog | uep_r_res_ack |
-                uep_t_res_ack; // expect data1, answer ack
+    UEP0_T_LEN = len;
+    UEP0_CTRL = bUEP_R_TOG | bUEP_T_TOG | UEP_R_RES_ACK |
+                UEP_T_RES_ACK; // Expect DATA1, Answer ACK
   } else {
-    uep0_t_len = 0; // tx data to host or send 0-length packet
-    uep0_ctrl = buep_r_tog | buep_t_tog | uep_r_res_ack |
-                uep_t_res_ack; // expect data1, answer ack
+    UEP0_T_LEN = 0; // Tx data to host or send 0-length packet
+    UEP0_CTRL = bUEP_R_TOG | bUEP_T_TOG | UEP_R_RES_ACK |
+                UEP_T_RES_ACK; // Expect DATA1, Answer ACK
   }
 }
 
-void usb_ep0_in() {
-  switch (setupreq) {
-  case usb_get_descriptor: {
-    __data uint8_t len = setuplen >= default_endp0_size
-                             ? default_endp0_size
-                             : setuplen; // send length
+void USB_EP0_IN() {
+  switch (SetupReq) {
+  case USB_GET_DESCRIPTOR: {
+    __data uint8_t len = SetupLen >= DEFAULT_ENDP0_SIZE
+                             ? DEFAULT_ENDP0_SIZE
+                             : SetupLen; // send length
     for (__data uint8_t i = 0; i < len; i++) {
-      ep0buffer[i] = pdescr[i];
+      Ep0Buffer[i] = pDescr[i];
     }
-    // memcpy( ep0buffer, pdescr, len );
-    setuplen -= len;
-    pdescr += len;
-    uep0_t_len = len;
-    uep0_ctrl ^= buep_t_tog; // switch between data0 and data1
+    // memcpy( Ep0Buffer, pDescr, len );
+    SetupLen -= len;
+    pDescr += len;
+    UEP0_T_LEN = len;
+    UEP0_CTRL ^= bUEP_T_TOG; // Switch between DATA0 and DATA1
   } break;
-  case usb_set_address:
-    usb_dev_ad = usb_dev_ad & buda_gp_bit | setuplen;
-    uep0_ctrl = uep_r_res_ack | uep_t_res_nak;
+  case USB_SET_ADDRESS:
+    USB_DEV_AD = USB_DEV_AD & bUDA_GP_BIT | SetupLen;
+    UEP0_CTRL = UEP_R_RES_ACK | UEP_T_RES_NAK;
     break;
   default:
-    uep0_t_len = 0; // end of transaction
-    uep0_ctrl = uep_r_res_ack | uep_t_res_nak;
+    UEP0_T_LEN = 0; // End of transaction
+    UEP0_CTRL = UEP_R_RES_ACK | UEP_T_RES_NAK;
     break;
   }
 }
 
-void usb_ep0_out() {
-  if (setupreq == set_line_coding) // set line coding
+void USB_EP0_OUT() {
+  if (SetupReq == SET_LINE_CODING) // Set line coding
   {
-    if (u_tog_ok) {
-      setlinecodinghandler();
-      uep0_t_len = 0;
-      uep0_ctrl |= uep_r_res_ack | uep_t_res_ack; // send 0-length packet
+    if (U_TOG_OK) {
+      setLineCodingHandler();
+      UEP0_T_LEN = 0;
+      UEP0_CTRL |= UEP_R_RES_ACK | UEP_T_RES_ACK; // send 0-length packet
     }
   } else {
-    uep0_t_len = 0;
-    uep0_ctrl |= uep_r_res_ack | uep_t_res_nak; // respond nak
+    UEP0_T_LEN = 0;
+    UEP0_CTRL |= UEP_R_RES_ACK | UEP_T_RES_NAK; // Respond Nak
   }
 }
 
-void usb_ep1_in() {
-  uep1_t_len = 0;
-  uep1_ctrl = uep1_ctrl & ~mask_uep_t_res | uep_t_res_nak; // default nak
+void USB_EP1_IN() {
+  UEP1_T_LEN = 0;
+  UEP1_CTRL = UEP1_CTRL & ~MASK_UEP_T_RES | UEP_T_RES_NAK; // Default NAK
 }
 
 #pragma save
 #pragma nooverlay
-void usbinterrupt(void) { // inline not really working in multiple files in sdcc
-  if (uif_transfer) {
-    // dispatch to service functions
-    __data uint8_t callindex = usb_int_st & mask_uis_endp;
-    switch (usb_int_st & mask_uis_token) {
-    case uis_token_out: { // sdcc will take iram if array of function pointer is
+void USBInterrupt(void) { // inline not really working in multiple files in SDCC
+  if (UIF_TRANSFER) {
+    // Dispatch to service functions
+    __data uint8_t callIndex = USB_INT_ST & MASK_UIS_ENDP;
+    switch (USB_INT_ST & MASK_UIS_TOKEN) {
+    case UIS_TOKEN_OUT: { // SDCC will take IRAM if array of function pointer is
                           // used.
-      switch (callindex) {
+      switch (callIndex) {
       case 0:
-        ep0_out_callback();
+        EP0_OUT_Callback();
         break;
       case 1:
-        ep1_out_callback();
+        EP1_OUT_Callback();
         break;
       case 2:
-        ep2_out_callback();
+        EP2_OUT_Callback();
         break;
       case 3:
-        ep3_out_callback();
+        EP3_OUT_Callback();
         break;
       case 4:
-        ep4_out_callback();
+        EP4_OUT_Callback();
         break;
       default:
         break;
       }
     } break;
-    case uis_token_sof: { // sdcc will take iram if array of function pointer is
+    case UIS_TOKEN_SOF: { // SDCC will take IRAM if array of function pointer is
                           // used.
-      switch (callindex) {
+      switch (callIndex) {
       case 0:
-        ep0_sof_callback();
+        EP0_SOF_Callback();
         break;
       case 1:
-        ep1_sof_callback();
+        EP1_SOF_Callback();
         break;
       case 2:
-        ep2_sof_callback();
+        EP2_SOF_Callback();
         break;
       case 3:
-        ep3_sof_callback();
+        EP3_SOF_Callback();
         break;
       case 4:
-        ep4_sof_callback();
+        EP4_SOF_Callback();
         break;
       default:
         break;
       }
     } break;
-    case uis_token_in: { // sdcc will take iram if array of function pointer is
+    case UIS_TOKEN_IN: { // SDCC will take IRAM if array of function pointer is
                          // used.
-      switch (callindex) {
+      switch (callIndex) {
       case 0:
-        ep0_in_callback();
+        EP0_IN_Callback();
         break;
       case 1:
-        ep1_in_callback();
+        EP1_IN_Callback();
         break;
       case 2:
-        ep2_in_callback();
+        EP2_IN_Callback();
         break;
       case 3:
-        ep3_in_callback();
+        EP3_IN_Callback();
         break;
       case 4:
-        ep4_in_callback();
+        EP4_IN_Callback();
         break;
       default:
         break;
       }
     } break;
-    case uis_token_setup: { // sdcc will take iram if array of function pointer
+    case UIS_TOKEN_SETUP: { // SDCC will take IRAM if array of function pointer
                             // is used.
-      switch (callindex) {
+      switch (callIndex) {
       case 0:
-        ep0_setup_callback();
+        EP0_SETUP_Callback();
         break;
       case 1:
-        ep1_setup_callback();
+        EP1_SETUP_Callback();
         break;
       case 2:
-        ep2_setup_callback();
+        EP2_SETUP_Callback();
         break;
       case 3:
-        ep3_setup_callback();
+        EP3_SETUP_Callback();
         break;
       case 4:
-        ep4_setup_callback();
+        EP4_SETUP_Callback();
         break;
       default:
         break;
@@ -450,108 +450,108 @@ void usbinterrupt(void) { // inline not really working in multiple files in sdcc
     } break;
     }
 
-    uif_transfer = 0; // clear interrupt flag
+    UIF_TRANSFER = 0; // Clear interrupt flag
   }
 
-  // device mode usb bus reset
-  if (uif_bus_rst) {
-    uep0_ctrl = uep_r_res_ack | uep_t_res_nak;
-    uep1_ctrl = buep_auto_tog |
-                uep_t_res_nak; // endpoint 1 automatically flips the sync flag,
-                               // and in transaction returns nak
-    uep2_ctrl = buep_auto_tog | uep_t_res_nak |
-                uep_r_res_ack; // endpoint 2 automatically flips the sync flag,
-                               // in transaction returns nak, out returns ack
-    // uep4_ctrl = uep_t_res_nak | uep_r_res_ack;  //buep_auto_tog only work for
+  // Device mode USB bus reset
+  if (UIF_BUS_RST) {
+    UEP0_CTRL = UEP_R_RES_ACK | UEP_T_RES_NAK;
+    UEP1_CTRL = bUEP_AUTO_TOG |
+                UEP_T_RES_NAK; // Endpoint 1 automatically flips the sync flag,
+                               // and IN transaction returns NAK
+    UEP2_CTRL = bUEP_AUTO_TOG | UEP_T_RES_NAK |
+                UEP_R_RES_ACK; // Endpoint 2 automatically flips the sync flag,
+                               // IN transaction returns NAK, OUT returns ACK
+    // UEP4_CTRL = UEP_T_RES_NAK | UEP_R_RES_ACK;  //bUEP_AUTO_TOG only work for
     // endpoint 1,2,3
 
-    usb_dev_ad = 0x00;
-    uif_suspend = 0;
-    uif_transfer = 0;
-    uif_bus_rst = 0; // clear interrupt flag
+    USB_DEV_AD = 0x00;
+    UIF_SUSPEND = 0;
+    UIF_TRANSFER = 0;
+    UIF_BUS_RST = 0; // Clear interrupt flag
 
-    usbconfig = 0;
+    UsbConfig = 0;
 
-    resetcdcparameters();
+    resetCDCParameters();
   }
 
-  // usb bus suspend / wake up
-  if (uif_suspend) {
-    uif_suspend = 0;
-    if (usb_mis_st & bums_suspend) { // suspend
+  // USB bus suspend / wake up
+  if (UIF_SUSPEND) {
+    UIF_SUSPEND = 0;
+    if (USB_MIS_ST & bUMS_SUSPEND) { // Suspend
 
-      // while ( xbus_aux & buart0_tx );                    // wait for tx
-      // safe_mod = 0x55;
-      // safe_mod = 0xaa;
-      // wake_ctrl = bwak_by_usb | bwak_rxd0_lo;    // wake up by usb or rxd0
-      // pcon |= pd; // chip sleep safe_mod = 0x55; safe_mod = 0xaa; wake_ctrl =
+      // while ( XBUS_AUX & bUART0_TX );                    // Wait for Tx
+      // SAFE_MOD = 0x55;
+      // SAFE_MOD = 0xAA;
+      // WAKE_CTRL = bWAK_BY_USB | bWAK_RXD0_LO;    // Wake up by USB or RxD0
+      // PCON |= PD; // Chip sleep SAFE_MOD = 0x55; SAFE_MOD = 0xAA; WAKE_CTRL =
       // 0x00;
 
-    } else {             // unexpected interrupt, not supposed to happen !
-      usb_int_fg = 0xff; // clear interrupt flag
+    } else {             // Unexpected interrupt, not supposed to happen !
+      USB_INT_FG = 0xFF; // Clear interrupt flag
     }
   }
 }
 #pragma restore
 
-void usbdevicecfg() {
-  usb_ctrl = 0x00;            // clear usb control register
-  usb_ctrl &= ~buc_host_mode; // this bit is the device selection mode
-  usb_ctrl |= buc_dev_pu_en | buc_int_busy |
-              buc_dma_en; // usb device and internal pull-up enable,
-                          // automatically return to nak before interrupt flag
+void USBDeviceCfg() {
+  USB_CTRL = 0x00;            // Clear USB control register
+  USB_CTRL &= ~bUC_HOST_MODE; // This bit is the device selection mode
+  USB_CTRL |= bUC_DEV_PU_EN | bUC_INT_BUSY |
+              bUC_DMA_EN; // USB device and internal pull-up enable,
+                          // automatically return to NAK before interrupt flag
                           // is cleared during interrupt
-  usb_dev_ad = 0x00;      // device address initialization
-  //     usb_ctrl |= buc_low_speed;
-  //     udev_ctrl |= bud_low_speed; //run for 1.5m
-  usb_ctrl &= ~buc_low_speed;
-  udev_ctrl &= ~bud_low_speed; // select full speed 12m mode, default mode
+  USB_DEV_AD = 0x00;      // Device address initialization
+  //     USB_CTRL |= bUC_LOW_SPEED;
+  //     UDEV_CTRL |= bUD_LOW_SPEED; //Run for 1.5M
+  USB_CTRL &= ~bUC_LOW_SPEED;
+  UDEV_CTRL &= ~bUD_LOW_SPEED; // Select full speed 12M mode, default mode
 
-#if defined(ch551) || defined(ch552) || defined(ch549)
-  udev_ctrl = bud_pd_dis; // disable dp/dm pull-down resistor
+#if defined(CH551) || defined(CH552) || defined(CH549)
+  UDEV_CTRL = bUD_PD_DIS; // Disable DP/DM pull-down resistor
 #endif
-#if defined(ch559)
-  udev_ctrl = bud_dp_pd_dis; // disable dp/dm pull-down resistor
+#if defined(CH559)
+  UDEV_CTRL = bUD_DP_PD_DIS; // Disable DP/DM pull-down resistor
 #endif
-  udev_ctrl |= bud_port_en; // enable physical port
+  UDEV_CTRL |= bUD_PORT_EN; // Enable physical port
 }
 
-void usbdeviceintcfg() {
-  usb_int_en |= buie_suspend;  // enable device hang interrupt
-  usb_int_en |= buie_transfer; // enable usb transfer completion interrupt
-  usb_int_en |= buie_bus_rst;  // enable device mode usb bus reset interrupt
-  usb_int_fg |= 0x1f;          // clear interrupt flag
-  ie_usb = 1;                  // enable usb interrupt
-  ea = 1;                      // enable global interrupts
+void USBDeviceIntCfg() {
+  USB_INT_EN |= bUIE_SUSPEND;  // Enable device hang interrupt
+  USB_INT_EN |= bUIE_TRANSFER; // Enable USB transfer completion interrupt
+  USB_INT_EN |= bUIE_BUS_RST;  // Enable device mode USB bus reset interrupt
+  USB_INT_FG |= 0x1F;          // Clear interrupt flag
+  IE_USB = 1;                  // Enable USB interrupt
+  EA = 1;                      // Enable global interrupts
 }
 
-void usbdeviceendpointcfg() {
-#if defined(ch559)
-  // ch559 use differend endianness for these registers
-  uep0_dma_h = ((uint16_t)ep0buffer >> 8); // endpoint 0 data transfer address
-  uep0_dma_l = ((uint16_t)ep0buffer >> 0); // endpoint 0 data transfer address
-  uep1_dma_h = ((uint16_t)ep1buffer >> 8); // endpoint 1 data transfer address
-  uep1_dma_l = ((uint16_t)ep1buffer >> 0); // endpoint 1 data transfer address
-  uep2_dma_h = ((uint16_t)ep2buffer >> 8); // endpoint 2 data transfer address
-  uep2_dma_l = ((uint16_t)ep2buffer >> 0); // endpoint 2 data transfer address
+void USBDeviceEndPointCfg() {
+#if defined(CH559)
+  // CH559 use differend endianness for these registers
+  UEP0_DMA_H = ((uint16_t)Ep0Buffer >> 8); // Endpoint 0 data transfer address
+  UEP0_DMA_L = ((uint16_t)Ep0Buffer >> 0); // Endpoint 0 data transfer address
+  UEP1_DMA_H = ((uint16_t)Ep1Buffer >> 8); // Endpoint 1 data transfer address
+  UEP1_DMA_L = ((uint16_t)Ep1Buffer >> 0); // Endpoint 1 data transfer address
+  UEP2_DMA_H = ((uint16_t)Ep2Buffer >> 8); // Endpoint 2 data transfer address
+  UEP2_DMA_L = ((uint16_t)Ep2Buffer >> 0); // Endpoint 2 data transfer address
 #else
-  uep0_dma = (uint16_t)ep0buffer; // endpoint 0 data transfer address
-  uep1_dma = (uint16_t)ep1buffer; // endpoint 1 data transfer address
-  uep2_dma = (uint16_t)ep2buffer; // endpoint 2 data transfer address
+  UEP0_DMA = (uint16_t)Ep0Buffer; // Endpoint 0 data transfer address
+  UEP1_DMA = (uint16_t)Ep1Buffer; // Endpoint 1 data transfer address
+  UEP2_DMA = (uint16_t)Ep2Buffer; // Endpoint 2 data transfer address
 #endif
 
-  uep2_3_mod = 0x0c; // endpoint2 double buffer
-  uep1_ctrl =
-      buep_auto_tog | uep_t_res_nak; // endpoint 1 automatically flips the sync
-                                     // flag, and in transaction returns nak
-  uep2_ctrl = buep_auto_tog | uep_t_res_nak |
-              uep_r_res_ack; // endpoint 2 automatically flips the sync flag, in
-                             // transaction returns nak, out returns ack
+  UEP2_3_MOD = 0x0C; // Endpoint2 double buffer
+  UEP1_CTRL =
+      bUEP_AUTO_TOG | UEP_T_RES_NAK; // Endpoint 1 automatically flips the sync
+                                     // flag, and IN transaction returns NAK
+  UEP2_CTRL = bUEP_AUTO_TOG | UEP_T_RES_NAK |
+              UEP_R_RES_ACK; // Endpoint 2 automatically flips the sync flag, IN
+                             // transaction returns NAK, OUT returns ACK
 
-  uep4_1_mod = 0x40; // endpoint1 tx enable
-  uep0_ctrl =
-      uep_r_res_ack | uep_t_res_nak; // manual flip, out transaction returns
-                                     // ack, in transaction returns nak
+  UEP4_1_MOD = 0X40; // endpoint1 TX enable
+  UEP0_CTRL =
+      UEP_R_RES_ACK | UEP_T_RES_NAK; // Manual flip, OUT transaction returns
+                                     // ACK, IN transaction returns NAK
 }
 
 #endif

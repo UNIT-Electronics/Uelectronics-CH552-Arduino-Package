@@ -1,105 +1,105 @@
 /*
- created by deqing sun for use with ch55xduino
+ created by Deqing Sun for use with CH55xduino
  */
 
 #include "wiring_private.h"
 
-#ifndef user_usb_ram
-void usbdevicecfg();
-void usbdeviceintcfg();
-void usbdeviceendpointcfg();
+#ifndef USER_USB_RAM
+void USBDeviceCfg();
+void USBDeviceIntCfg();
+void USBDeviceEndPointCfg();
 #endif
 
 extern __idata volatile uint32_t timer0_overflow_count;
 extern __idata volatile uint8_t timer0_overflow_count_5th_byte;
 
-#if f_cpu == 56000000
-#define t0_cycle 224
+#if F_CPU == 56000000
+#define T0_CYCLE 224
 #else
-#define t0_cycle 250
+#define T0_CYCLE 250
 #endif
 
 // using register bank 1
-void timer0interrupt(void) __interrupt(int_no_tmr0) __using(1) {
+void Timer0Interrupt(void) __interrupt(INT_NO_TMR0) __using(1) {
   /*timer0_overflow_count++;
-   */ //when putting timer0_millis and timer0_overflow_count in bank 1, c code is no longer correct
-  __asm__(";increase timer0_overflow_count on r0~r4(5bytes)\n"
+   */ //when putting timer0_millis and timer0_overflow_count in bank 1, C code is no longer correct
+  __asm__(";Increase timer0_overflow_count on R0~R4(5bytes)\n"
           "    inc r0                                      \n"
-          "    cjne r0,#0,inctimer0_overflow_countover$    \n"
+          "    cjne r0,#0,incTimer0_overflow_countOver$    \n"
           "    inc r1                                      \n"
-          "    cjne r1,#0,inctimer0_overflow_countover$    \n"
+          "    cjne r1,#0,incTimer0_overflow_countOver$    \n"
           "    inc r2                                      \n"
-          "    cjne r2,#0,inctimer0_overflow_countover$    \n"
+          "    cjne r2,#0,incTimer0_overflow_countOver$    \n"
           "    inc r3                                      \n"
-          "    cjne r3,#0,inctimer0_overflow_countover$    \n"
+          "    cjne r3,#0,incTimer0_overflow_countOver$    \n"
           "    inc r4                                      \n"
-          "inctimer0_overflow_countover$:                  \n");
+          "incTimer0_overflow_countOver$:                  \n");
 }
 
 uint32_t micros() {
   /*uint32_t m;
    uint8_t t;
-   uint8_t interrupton = ea;
-   ea = 0;
+   uint8_t interruptOn = EA;
+   EA = 0;
 
    m = timer0_overflow_count;
-   t = tl0;
+   t = TL0;
 
-   if ((tf0) && (t < 255)){
+   if ((TF0) && (t < 255)){
    m++;
    }
 
-   if (interrupton) ea = 1;*/
+   if (interruptOn) EA = 1;*/
 
-  __asm__(";uint8_t interrupton = ea; //to c            \n"
+  __asm__(";uint8_t interruptOn = EA; //to c            \n"
           ";clr and mov won't affect c                  \n"
-          "    mov c,_ea                                \n"
-          ";ea = 0;                                     \n"
-          "    clr _ea                                  \n"
-          ";copy _timer0_overflow_count to local r0~r3,m\n"
+          "    mov c,_EA                                \n"
+          ";EA = 0;                                     \n"
+          "    clr _EA                                  \n"
+          ";Copy _timer0_overflow_count to local R0~R3,m\n"
           "    mov r0, (_timer0_overflow_count)         \n"
           "    mov r1, (_timer0_overflow_count)+1       \n"
           "    mov r2, (_timer0_overflow_count)+2       \n"
           "    mov r3, (_timer0_overflow_count)+3       \n"
-          ";copy tl0 to local r4, t                     \n"
-          "    mov r4, _tl0                             \n"
-          ";copy tcon (tf0) to local r5                 \n"
-          "    mov b, _tcon                             \n"
-          ";if (interrupton) ea = 1;                    \n"
-          "    mov _ea,c                                \n"
+          ";Copy TL0 to local R4, t                     \n"
+          "    mov r4, _TL0                             \n"
+          ";Copy TCON (TF0) to local R5                 \n"
+          "    mov b, _TCON                             \n"
+          ";if (interruptOn) EA = 1;                    \n"
+          "    mov _EA,c                                \n"
 
-          ";if ((tf0 in b) && (r4 != 255)){             \n"
-          "    jnb b.5,inctimer0_overf_cntcopyover$     \n"
+          ";if ((TF0 in b) && (R4 != 255)){             \n"
+          "    jnb b.5,incTimer0_overf_cntCopyOver$     \n"
           "    mov a,#1     \n"
           "    add a,r4     \n"
-          "    jz inctimer0_overf_cntcopyover$\n"
+          "    jz incTimer0_overf_cntCopyOver$\n"
 
           ";m++                                         \n"
           "    inc r0                                   \n"
-          "    cjne r0,#0,inctimer0_overf_cntcopyover$  \n"
+          "    cjne r0,#0,incTimer0_overf_cntCopyOver$  \n"
           "    inc r1                                   \n"
-          "    cjne r1,#0,inctimer0_overf_cntcopyover$  \n"
+          "    cjne r1,#0,incTimer0_overf_cntCopyOver$  \n"
           "    inc r2                                   \n"
-          "    cjne r2,#0,inctimer0_overf_cntcopyover$  \n"
+          "    cjne r2,#0,incTimer0_overf_cntCopyOver$  \n"
           "    inc r3                                   \n"
-          "inctimer0_overf_cntcopyover$:                \n");
+          "incTimer0_overf_cntCopyOver$:                \n");
 
-  // since tl0 (r4) always ranging from (256-t0_cycle) to 255, we can reduce r4
-  // by (256-t0_cycle)
+  // since TL0 (R4) always ranging from (256-T0_CYCLE) to 255, we can reduce R4
+  // by (256-T0_CYCLE)
 
-#if t0_cycle == 250
+#if T0_CYCLE == 250
   __asm__("    clr c                                    \n"
           "    mov a, r4                                \n"
           "    subb a,#6                                \n"
           "    mov r4, a                                \n");
-#elif t0_cycle == 224
+#elif T0_CYCLE == 224
   __asm__("    clr c                                    \n"
           "    mov a, r4                                \n"
           "    subb a,#32                               \n"
           "    mov r4, a                                \n");
 #endif
 
-#if f_cpu == 16000000
+#if F_CPU == 16000000
   // 1m = 250t 1t=0.75us (m*250+t)*3/2/2
   // m in r0~r3
   // t in r4
@@ -218,9 +218,9 @@ uint32_t micros() {
           "    mov a, r3                                \n"
 
   );
-  // ’dpl’ (lsb),’dph’,’b’ & ’acc’
-#elif f_cpu == 24000000
-  // 24m clk
+  // ’dpl’ (LSB),’dph’,’b’ & ’acc’
+#elif F_CPU == 24000000
+  // 24M CLK
 
   /*1m = 250t 1t=0.5us (m*250+t)/2
 
@@ -285,7 +285,7 @@ uint32_t micros() {
           "    addc a, r5                               \n"
 
   );
-#elif f_cpu == 32000000
+#elif F_CPU == 32000000
   // 1m = 250t 1t=0.375us (m*250+t)*3/2/2/2
   // m in r0~r3
   // t in r4
@@ -422,9 +422,9 @@ uint32_t micros() {
           "    mov a, r3                                \n"
 
   );
-  // ’dpl’ (lsb),’dph’,’b’ & ’acc’
-#elif f_cpu == 56000000
-  // 56m clk
+  // ’dpl’ (LSB),’dph’,’b’ & ’acc’
+#elif F_CPU == 56000000
+  // 56M CLK
 
   /*1m = 224t 1t=0.21412us=3/14us (m*224+t)*3/14
    m*48+t*3/14
@@ -513,8 +513,8 @@ uint32_t micros() {
           "    mov a, r3                                \n"
 
   );
-#elif f_cpu == 12000000
-  // 12m clk
+#elif F_CPU == 12000000
+  // 12M CLK
 
   /*1m = 250t 1t=1us (m*250+t)
 
@@ -578,8 +578,8 @@ uint32_t micros() {
 #error "clock not supported yet"
 
 #endif
-  // return values: ’dpl’ 1b, ’dpl’ lsb & ’dph’ 2b,
-  // ’dpl’, ’dph’ and ’b’ 3b, ’dpl’,’dph’,’b’ & ’acc’ 4b
+  // return values: ’dpl’ 1B, ’dpl’ LSB & ’dph’ 2B,
+  // ’dpl’, ’dph’ and ’b’ 3B, ’dpl’,’dph’,’b’ & ’acc’ 4B
 }
 
 uint32_t millis() {
@@ -590,21 +590,21 @@ uint32_t millis() {
   // assembly has better support for 5 byte data type
   // and efficient in shifting
 
-  __asm__(";uint8_t interrupton = ea; //to c            \n"
+  __asm__(";uint8_t interruptOn = EA; //to c            \n"
           ";clr and mov won't affect c                  \n"
-          "    mov c,_ea                                \n"
-          ";ea = 0;                                     \n"
-          "    clr _ea                                  \n"
-          ";copy _timer0_overflow_count to local r0~r4  \n"
+          "    mov c,_EA                                \n"
+          ";EA = 0;                                     \n"
+          "    clr _EA                                  \n"
+          ";Copy _timer0_overflow_count to local R0~R4  \n"
           "    mov r0, (_timer0_overflow_count)         \n"
           "    mov r1, (_timer0_overflow_count)+1       \n"
           "    mov r2, (_timer0_overflow_count)+2       \n"
           "    mov r3, (_timer0_overflow_count)+3       \n"
           "    mov r4, (_timer0_overflow_count)+4       \n"
-          ";if (interrupton) ea = 1;                    \n"
-          "    mov _ea,c                                \n");
+          ";if (interruptOn) EA = 1;                    \n"
+          "    mov _EA,c                                \n");
 
-#if f_cpu == 16000000
+#if F_CPU == 16000000
   __asm__(";return (timer0_overflow_count*48)>>8        \n"
 
           "    mov b, #48                               \n"
@@ -647,10 +647,10 @@ uint32_t millis() {
           ";calculation finished, a already in place    \n"
           "    mov b, r1                                \n");
 
-#elif f_cpu == 24000000
+#elif F_CPU == 24000000
   __asm__(";return timer0_overflow_count>>3             \n"
-          ";or: return (timer0_overflow_count<<5)>>8    \n"
-          ";or: return (timer0_overflow_count*32)>>8    \n"
+          ";Or: return (timer0_overflow_count<<5)>>8    \n"
+          ";Or: return (timer0_overflow_count*32)>>8    \n"
           "    mov b, #32                               \n"
           "    mov a, r0                                \n"
           "    mul ab                                   \n"
@@ -660,7 +660,7 @@ uint32_t millis() {
           "    mov a, r1                                \n"
           "    mul ab                                   \n"
           "    add a, r0                                \n"
-          ";carry won't be set, if i calculated right   \n"
+          ";carry won't be set, if I calculated right   \n"
           "    mov dpl, a                               \n"
           "    mov r0, b                                \n"
 
@@ -668,7 +668,7 @@ uint32_t millis() {
           "    mov a, r2                                \n"
           "    mul ab                                   \n"
           "    add a, r0                                \n"
-          ";carry won't be set, if i calculated right   \n"
+          ";carry won't be set, if I calculated right   \n"
           "    mov dph, a                               \n"
           "    mov r0, b                                \n"
 
@@ -676,7 +676,7 @@ uint32_t millis() {
           "    mov a, r3                                \n"
           "    mul ab                                   \n"
           "    add a, r0                                \n"
-          ";carry won't be set, if i calculated right   \n"
+          ";carry won't be set, if I calculated right   \n"
           "    mov r1, a                                \n"
           "    mov r0, b                                \n"
 
@@ -684,12 +684,12 @@ uint32_t millis() {
           "    mov a, r4                                \n"
           "    mul ab                                   \n"
           "    add a, r0                                \n"
-          ";carry won't be set, if i calculated right   \n"
+          ";carry won't be set, if I calculated right   \n"
 
           ";calculation finished, a already in place    \n"
           "    mov b, r1                                \n");
 
-#elif f_cpu == 32000000
+#elif F_CPU == 32000000
   __asm__(";return (timer0_overflow_count*24)>>8        \n"
 
           "    mov b, #24                               \n"
@@ -732,7 +732,7 @@ uint32_t millis() {
           ";calculation finished, a already in place    \n"
           "    mov b, r1                                \n");
 
-#elif f_cpu == 56000000
+#elif F_CPU == 56000000
   __asm__(
       ";return timer0_overflow_count*6/125          \n"
       // mutiply by 6
@@ -778,7 +778,7 @@ uint32_t millis() {
       "    addc a, b                                \n"
       "    mov r5, a                                \n"
 
-      // ref:mcs51 三字节无符号除法程序（asm）modify for 6 bytes
+      // ref:MCS51 三字节无符号除法程序（ASM）modify for 6 bytes
       "    mov r7,#125                              \n"
       "    mov a,r5                                 \n"
       "    mov b,r7                                 \n"
@@ -786,7 +786,7 @@ uint32_t millis() {
       "    mov r5,b                                 \n"
       "    mov r6,a                                 \n"
       "    mov b,#40                                \n"
-      ";after keeping high result, iterate all b bit with left shift \n"
+      ";after keeping high result, iterate all B bit with left shift \n"
       "1$: ;div125_iter_bits                        \n"
       "    clr c                                    \n"
       "    mov a,r0                                 \n"
@@ -833,10 +833,10 @@ uint32_t millis() {
       "    mov a, r3                                \n"
 
   );
-#elif f_cpu == 12000000
+#elif F_CPU == 12000000
   __asm__(";return timer0_overflow_count>>2             \n"
-          ";or: return (timer0_overflow_count<<6)>>8    \n"
-          ";or: return (timer0_overflow_count*64)>>8    \n"
+          ";Or: return (timer0_overflow_count<<6)>>8    \n"
+          ";Or: return (timer0_overflow_count*64)>>8    \n"
           "    mov b, #64                               \n"
           "    mov a, r0                                \n"
           "    mul ab                                   \n"
@@ -846,7 +846,7 @@ uint32_t millis() {
           "    mov a, r1                                \n"
           "    mul ab                                   \n"
           "    add a, r0                                \n"
-          ";carry won't be set, if i calculated right   \n"
+          ";carry won't be set, if I calculated right   \n"
           "    mov dpl, a                               \n"
           "    mov r0, b                                \n"
 
@@ -854,7 +854,7 @@ uint32_t millis() {
           "    mov a, r2                                \n"
           "    mul ab                                   \n"
           "    add a, r0                                \n"
-          ";carry won't be set, if i calculated right   \n"
+          ";carry won't be set, if I calculated right   \n"
           "    mov dph, a                               \n"
           "    mov r0, b                                \n"
 
@@ -862,7 +862,7 @@ uint32_t millis() {
           "    mov a, r3                                \n"
           "    mul ab                                   \n"
           "    add a, r0                                \n"
-          ";carry won't be set, if i calculated right   \n"
+          ";carry won't be set, if I calculated right   \n"
           "    mov r1, a                                \n"
           "    mov r0, b                                \n"
 
@@ -870,7 +870,7 @@ uint32_t millis() {
           "    mov a, r4                                \n"
           "    mul ab                                   \n"
           "    add a, r0                                \n"
-          ";carry won't be set, if i calculated right   \n"
+          ";carry won't be set, if I calculated right   \n"
 
           ";calculation finished, a already in place    \n"
           "    mov b, r1                                \n");
@@ -892,14 +892,14 @@ void delay(__data uint32_t ms) {
   }
 }
 
-void delaymicroseconds(__data uint16_t us) {
-  // call with const, "mov dptr, #const" and "lcall", 3 + (6 or 7) cycles,
+void delayMicroseconds(__data uint16_t us) {
+  // call with const, "mov dptr, #CONST" and "lcall", 3 + (6 or 7) cycles,
   // depending on even or odd address call with var, "mov dpl, r", "mov dph, r",
-  // and "lcall", 2 + 2 + (6 or 7) cycles, depending on odd or even address the
+  // and "lcall", 2 + 2 + (6 or 7) cycles, depending on odd or even address The
   // compiler by default uses a caller saves convention for register saving
   // across function calls
   us; // avoid unreferenced function argument warning
-#if f_cpu >= 56000000ul
+#if F_CPU >= 56000000UL
   __asm__(
       ".even                                    \n"
       "    mov  r6, dpl                         \n" // low 8-bit
@@ -947,7 +947,7 @@ void delaymicroseconds(__data uint16_t us) {
       "    inc  r7                              \n" // there will be extra 1
                                                     // cycles for every 256us
       "    cjne r7, #0,loop56m_us_2$            \n");
-#elif f_cpu >= 32000000ul
+#elif F_CPU >= 32000000UL
   __asm__(
       ".even                                    \n"
       "    mov  r6, dpl                         \n" // low 8-bit
@@ -990,7 +990,7 @@ void delaymicroseconds(__data uint16_t us) {
                                                     // cycles for every 256us
       "    cjne r7, #0,loop32m_us_2$            \n"
       "    nop                                  \n");
-#elif f_cpu >= 24000000ul
+#elif F_CPU >= 24000000UL
   __asm__(
       ".even                                    \n"
       "    mov  r6, dpl                         \n" // low 8-bit
@@ -1038,7 +1038,7 @@ void delaymicroseconds(__data uint16_t us) {
                                                     // cycles for every 256us
       "    cjne r7, #0,loop24m_us_2$            \n"
       "    nop                                  \n");
-#elif f_cpu >= 16000000ul
+#elif F_CPU >= 16000000UL
   __asm__(
       ".even                                    \n"
       "    mov  r6, dpl                         \n" // low 8-bit
@@ -1087,7 +1087,7 @@ void delaymicroseconds(__data uint16_t us) {
       "    inc  r7                              \n" // there will be extra 1
                                                     // cycles for every 256us
       "    cjne r7, #0,loop16m_us_2$            \n");
-#elif f_cpu >= 12000000ul
+#elif F_CPU >= 12000000UL
   __asm__(
       ".even                                    \n"
       "    mov  r6, dpl                         \n" // low 8-bit
@@ -1140,104 +1140,104 @@ void delaymicroseconds(__data uint16_t us) {
 
 void init() {
 
-#if f_ext_osc > 0
-  // switch to external osc
-  safe_mod = 0x55;
-  safe_mod = 0xaa;
-  clock_cfg |= bosc_en_xt;
-  delaymicroseconds(10000);
-  safe_mod = 0x55;
-  safe_mod = 0xaa;
-  clock_cfg &= ~bosc_en_int;
-  safe_mod = 0x00;
+#if F_EXT_OSC > 0
+  // switch to external OSC
+  SAFE_MOD = 0x55;
+  SAFE_MOD = 0xAA;
+  CLOCK_CFG |= bOSC_EN_XT;
+  delayMicroseconds(10000);
+  SAFE_MOD = 0x55;
+  SAFE_MOD = 0xAA;
+  CLOCK_CFG &= ~bOSC_EN_INT;
+  SAFE_MOD = 0x00;
 #endif
 
   // set internal clock
-  safe_mod = 0x55;
-  safe_mod = 0xaa;
+  SAFE_MOD = 0x55;
+  SAFE_MOD = 0xAA;
 
-#if defined(ch551) || defined(ch552)
-#if f_cpu == 32000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x07; // 32mhz
-#elif f_cpu == 24000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x06; // 24mhz
-#elif f_cpu == 16000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x05; // 16mhz
-#elif f_cpu == 12000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x04; // 12mhz
-#elif f_cpu == 6000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x03; // 6mhz
-#elif f_cpu == 3000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x02; // 3mhz
-#elif f_cpu == 750000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x01; // 750khz
-#elif f_cpu == 187500
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x00; // 187.5khz
+#if defined(CH551) || defined(CH552)
+#if F_CPU == 32000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x07; // 32MHz
+#elif F_CPU == 24000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x06; // 24MHz
+#elif F_CPU == 16000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x05; // 16MHz
+#elif F_CPU == 12000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x04; // 12MHz
+#elif F_CPU == 6000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x03; // 6MHz
+#elif F_CPU == 3000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x02; // 3MHz
+#elif F_CPU == 750000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x01; // 750KHz
+#elif F_CPU == 187500
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x00; // 187.5KHz
 #else
-#warning f_cpu invalid or not set
+#warning F_CPU invalid or not set
 #endif
 
-#elif defined(ch549)
-#if f_cpu == 48000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x07; // 48mhz
-#elif f_cpu == 32000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x06; // 32mhz
-#elif f_cpu == 24000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x05; // 24mhz
-#elif f_cpu == 16000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x04; // 16mhz
-#elif f_cpu == 12000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x03; // 12mhz
-#elif f_cpu == 3000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x02; // 3mhz
-#elif f_cpu == 750000
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x01; // 750khz
-#elif f_cpu == 187500
-  clock_cfg = clock_cfg & ~mask_sys_ck_sel | 0x00; // 187.5khz
+#elif defined(CH549)
+#if F_CPU == 48000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x07; // 48MHz
+#elif F_CPU == 32000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x06; // 32MHz
+#elif F_CPU == 24000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x05; // 24MHz
+#elif F_CPU == 16000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x04; // 16MHz
+#elif F_CPU == 12000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x03; // 12MHz
+#elif F_CPU == 3000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x02; // 3MHz
+#elif F_CPU == 750000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x01; // 750KHz
+#elif F_CPU == 187500
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_SEL | 0x00; // 187.5KHz
 #else
-#warning f_cpu invalid or not set
+#warning F_CPU invalid or not set
 #endif
 
-#elif defined(ch559)
-#if f_cpu == 24000000
-  clock_cfg =
-      clock_cfg & ~mask_sys_ck_div | 12; // 24mhz, 12m*(24 default pll)/12=24m
-#elif f_cpu == 16000000
-  clock_cfg = clock_cfg & ~mask_sys_ck_div | 18; // 16mhz
-#elif f_cpu == 56000000
-  pll_cfg = (7 << 5) | (28);                    // fusb4x = 12m*(28 pll)/7=48m
-  clock_cfg = clock_cfg & ~mask_sys_ck_div | 6; // 56mhz, 12m*(28 pll)/6=56m
+#elif defined(CH559)
+#if F_CPU == 24000000
+  CLOCK_CFG =
+      CLOCK_CFG & ~MASK_SYS_CK_DIV | 12; // 24MHz, 12M*(24 default PLL)/12=24M
+#elif F_CPU == 16000000
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_DIV | 18; // 16MHz
+#elif F_CPU == 56000000
+  PLL_CFG = (7 << 5) | (28);                    // Fusb4x = 12M*(28 PLL)/7=48M
+  CLOCK_CFG = CLOCK_CFG & ~MASK_SYS_CK_DIV | 6; // 56MHz, 12M*(28 PLL)/6=56M
 #else
-#warning f_cpu invalid or not set
+#warning F_CPU invalid or not set
 #endif
 
 #endif
 
-  safe_mod = 0x00;
+  SAFE_MOD = 0x00;
 
-  delaymicroseconds(5000); // needed to stablize internal rc
+  delayMicroseconds(5000); // needed to stablize internal RC
 
-#ifndef user_usb_ram
-  // init usb
-  usbdevicecfg();
-  usbdeviceendpointcfg(); //????
-  usbdeviceintcfg();      //?????
-  uep0_t_len = 0;
-  uep1_t_len = 0; //????????????
-  uep2_t_len = 0; //????????????
+#ifndef USER_USB_RAM
+  // init USB
+  USBDeviceCfg();
+  USBDeviceEndPointCfg(); //????
+  USBDeviceIntCfg();      //?????
+  UEP0_T_LEN = 0;
+  UEP1_T_LEN = 0; //????????????
+  UEP2_T_LEN = 0; //????????????
 #endif
 
-  // init pwm
-  pwm_ck_se = 93; // div by 94 for 1k freq on 24m clk
-  pwm_ctrl = 0;
+  // init PWM
+  PWM_CK_SE = 93; // DIV by 94 for 1K freq on 24M clk
+  PWM_CTRL = 0;
 
-  // init t0 for millis
-  tmod = (tmod & ~0x0f) | (bt0_m1); // mode 2 for autoreload
-  t2mod = t2mod & ~bt0_clk;         // bt0_clk=0;clk div by 12
-  th0 = 255 - t0_cycle + 1;
-  tf0 = 0;
-  et0 = 1;
-  tr0 = 1;
+  // init T0 for millis
+  TMOD = (TMOD & ~0x0F) | (bT0_M1); // mode 2 for autoreload
+  T2MOD = T2MOD & ~bT0_CLK;         // bT0_CLK=0;clk Div by 12
+  TH0 = 255 - T0_CYCLE + 1;
+  TF0 = 0;
+  ET0 = 1;
+  TR0 = 1;
 
-  ea = 1; // millis and delay needs interrupt
+  EA = 1; // millis and delay needs interrupt
 }

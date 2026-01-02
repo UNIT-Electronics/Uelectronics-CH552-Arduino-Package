@@ -4,113 +4,113 @@
 #include "include/ch5xx_usb.h"
 // clang-format on
 
-// in sdcc, caller will save the registers (r0-r7)
-// dpl, dph, b and acc are for parameter/return value passing
-// at this moment, sendchardebug is not included in any header
-// use pragma callee_saves when you declare sendchardebug
-#pragma callee_saves sendchardebug
-void sendchardebug(__data char c) // 8mbps under 24m clk
+// in SDCC, caller will save the registers (R0-R7)
+// DPL, DPH, B and ACC are for parameter/return value passing
+// At this moment, sendCharDebug is not included in any header
+// use pragma callee_saves when you declare sendCharDebug
+#pragma callee_saves sendCharDebug
+void sendCharDebug(__data char c) // 8Mbps under 24M clk
 {
   c; // avoid unreferenced function argument warning
-  // uint8_t interrupton = ea;
-  // ea = 0;
-  __asm__("  mov c,_ea         \n"
+  // uint8_t interruptOn = EA;
+  // EA = 0;
+  __asm__("  mov c,_EA         \n"
           "  clr a             \n"
           "  rlc a             \n"
           "  mov b,a           \n"
-          "  clr _ea           \n");
+          "  clr _EA           \n");
 
-  // using p1.4
+  // using P1.4
   __asm__( // any branch will cause unpredictable timing due to code alignment
       "  mov a,dpl         \n" // the parameter of func
 
       "  clr c             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  rrc a             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  rrc a             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  rrc a             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  rrc a             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  rrc a             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  rrc a             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  rrc a             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  rrc a             \n"
-      "  mov _p1_4,c       \n"
+      "  mov _P1_4,c       \n"
       "  setb c            \n"
-      "  mov _p1_4,c       \n");
-  // if (interrupton) ea = 1;
+      "  mov _P1_4,c       \n");
+  // if (interruptOn) EA = 1;
 
   __asm__("  mov a,b           \n"
-          "  jz skipseteadebug$\n"
-          "  setb _ea          \n"
-          "skipseteadebug$:    \n");
+          "  jz skipSetEADebug$\n"
+          "  setb _EA          \n"
+          "skipSetEADebug$:    \n");
 }
 
 /*
-void    mdelayus( uint16_t n )
+void    mDelayuS( uint16_t n )
 {
-#ifdef    f_cpu
-#if        f_cpu <= 6000000
+#ifdef    F_CPU
+#if        F_CPU <= 6000000
     n >>= 2;
 #endif
-#if        f_cpu <= 3000000
+#if        F_CPU <= 3000000
     n >>= 2;
 #endif
-#if        f_cpu <= 750000
+#if        F_CPU <= 750000
     n >>= 4;
 #endif
 #endif
-    while ( n ) {  // total = 12~13 fsys cycles, 1us @fsys=12mhz
-        ++ safe_mod;  // 2 fsys cycles, for higher fsys, add operation here
-#ifdef    f_cpu
-#if        f_cpu >= 14000000
-        ++ safe_mod;
+    while ( n ) {  // total = 12~13 Fsys cycles, 1uS @Fsys=12MHz
+        ++ SAFE_MOD;  // 2 Fsys cycles, for higher Fsys, add operation here
+#ifdef    F_CPU
+#if        F_CPU >= 14000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 16000000
-        ++ safe_mod;
+#if        F_CPU >= 16000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 18000000
-        ++ safe_mod;
+#if        F_CPU >= 18000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 20000000
-        ++ safe_mod;
+#if        F_CPU >= 20000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 22000000
-        ++ safe_mod;
+#if        F_CPU >= 22000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 24000000
-        ++ safe_mod;
+#if        F_CPU >= 24000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 26000000
-        ++ safe_mod;
+#if        F_CPU >= 26000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 28000000
-        ++ safe_mod;
+#if        F_CPU >= 28000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 30000000
-        ++ safe_mod;
+#if        F_CPU >= 30000000
+        ++ SAFE_MOD;
 #endif
-#if        f_cpu >= 32000000
-        ++ safe_mod;
+#if        F_CPU >= 32000000
+        ++ SAFE_MOD;
 #endif
 #endif
         -- n;
     }
 }
 
-void    mdelayms( uint16_t n ){
+void    mDelaymS( uint16_t n ){
     while ( n ) {
-#ifdef    delay_ms_hw
-        while ( ( tkey_ctrl & btkc_if ) == 0 );
-        while ( tkey_ctrl & btkc_if );
+#ifdef    DELAY_MS_HW
+        while ( ( TKEY_CTRL & bTKC_IF ) == 0 );
+        while ( TKEY_CTRL & bTKC_IF );
 #else
-        mdelayus( 1000 );
+        mDelayuS( 1000 );
 #endif
         -- n;
     }

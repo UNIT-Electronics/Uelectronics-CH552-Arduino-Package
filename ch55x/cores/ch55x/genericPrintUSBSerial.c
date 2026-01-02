@@ -1,28 +1,28 @@
 /*
- created by deqing sun for use with ch55xduino
- need sdcc 13402 or higher version
+ created by Deqing Sun for use with CH55xduino
+ need SDCC 13402 or higher version
  */
 
 #include "Arduino.h"
 
-void printnothing() { // only appear in this file
+void printNothing() { // only appear in this file
 }
 
-void usbserial_print_i_func(__data long i) {
-  print_print_i(usbserial_write, i);
+void USBSerial_print_i_func(__data long i) {
+  Print_print_i(USBSerial_write, i);
 }
-void usbserial_print_ib_func(__data long i, __xdata uint8_t base) {
-  print_print_ib(usbserial_write, i, base);
+void USBSerial_print_ib_func(__data long i, __xdata uint8_t base) {
+  Print_print_ib(USBSerial_write, i, base);
 }
-void usbserial_print_u_func(__data unsigned long u) {
-  print_print_u(usbserial_write, u);
+void USBSerial_print_u_func(__data unsigned long u) {
+  Print_print_u(USBSerial_write, u);
 }
-void usbserial_print_ub_func(__data unsigned long u, __xdata uint8_t base) {
-  print_print_ib(usbserial_write, u, base);
+void USBSerial_print_ub_func(__data unsigned long u, __xdata uint8_t base) {
+  Print_print_ib(USBSerial_write, u, base);
 }
-void usbserial_print_s_func(char *__data s) {
-  print_print_s(usbserial_write, s);
+void USBSerial_print_s_func(char *__data s) {
+  Print_print_s(USBSerial_write, s);
 }
-void usbserial_print_sn_func(char *__data s, __xdata uint8_t size) {
-  print_print_sn(usbserial_write, s, size);
+void USBSerial_print_sn_func(char *__data s, __xdata uint8_t size) {
+  Print_print_sn(USBSerial_write, s, size);
 }

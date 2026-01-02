@@ -1,8 +1,8 @@
-#include "Arduino.h"
+#include <Arduino.h>
 
-#if defined(ch551) || defined(ch552)
-uint16_t digitalreaddirectlutaddrandcarryreturn(uint8_t pin) {
-  //'dpl' (lsb),'dph','b' & 'acc'
+#if defined(CH551) || defined(CH552)
+uint16_t digitalReadDirectLutAddrAndCarryReturn(uint8_t pin) {
+  //'dpl' (LSB),'dph','b' & 'acc'
   pin;
   // clang-format off
   __asm__(
@@ -20,7 +20,7 @@ uint16_t digitalreaddirectlutaddrandcarryreturn(uint8_t pin) {
     "    jmp @a+dptr                              \n"
 
     "direct_read_carry_lut$:                      \n"
-    ";no port0                                    \n"
+    ";No PORT0                                    \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
@@ -32,27 +32,27 @@ uint16_t digitalreaddirectlutaddrandcarryreturn(uint8_t pin) {
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     
-    ";port1                                       \n"
-    "    mov	c,_p1_0                             \n"
+    ";PORT1                                       \n"
+    "    mov	c,_P1_0                             \n"
     "    ret                                      \n"
-    "    mov	c,_p1_1                             \n"
+    "    mov	c,_P1_1                             \n"
     "    ret                                      \n"
-    "    mov	c,_p1_2                             \n"
+    "    mov	c,_P1_2                             \n"
     "    ret                                      \n"
-    "    mov	c,_p1_3                             \n"
+    "    mov	c,_P1_3                             \n"
     "    ret                                      \n"
-    "    mov	c,_p1_4                             \n"
+    "    mov	c,_P1_4                             \n"
     "    ret                                      \n"
-    "    mov	c,_p1_5                             \n"
+    "    mov	c,_P1_5                             \n"
     "    ret                                      \n"
-    "    mov	c,_p1_6                             \n"
+    "    mov	c,_P1_6                             \n"
     "    ret                                      \n"
-    "    mov	c,_p1_7                             \n"
+    "    mov	c,_P1_7                             \n"
     "    ret                                      \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     
-    ";no port2                                    \n"
+    ";No PORT2                                    \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
@@ -64,22 +64,22 @@ uint16_t digitalreaddirectlutaddrandcarryreturn(uint8_t pin) {
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"
 
-    ";port3                                       \n"
-    "    mov	c,_p3_0                             \n"
+    ";PORT3                                       \n"
+    "    mov	c,_P3_0                             \n"
     "    ret                                      \n"
-    "    mov	c,_p3_1                             \n"
+    "    mov	c,_P3_1                             \n"
     "    ret                                      \n"
-    "    mov	c,_p3_2                             \n"
+    "    mov	c,_P3_2                             \n"
     "    ret                                      \n"
-    "    mov	c,_p3_3                             \n"
+    "    mov	c,_P3_3                             \n"
     "    ret                                      \n"
-    "    mov	c,_p3_4                             \n"
+    "    mov	c,_P3_4                             \n"
     "    ret                                      \n"
-    "    mov	c,_p3_5                             \n"
+    "    mov	c,_P3_5                             \n"
     "    ret                                      \n"
-    "    mov	c,_p3_6                             \n"
+    "    mov	c,_P3_6                             \n"
     "    ret                                      \n"
-    "    mov	c,_p3_7                             \n"
+    "    mov	c,_P3_7                             \n"
     "    ret                                      \n"
     "    nop \n nop \n ret                        \n"
     "    nop \n nop \n ret                        \n"    

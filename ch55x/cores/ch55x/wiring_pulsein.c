@@ -1,30 +1,30 @@
 /*
- created by deqing sun for use with ch55xduino
+ created by Deqing Sun for use with CH55xduino
  */
 
-#define arduino_main
+#define ARDUINO_MAIN
 
 // clang-format off
 #include "wiring_private.h"
 
-uint16_t digitalreaddirectlutaddrandcarryreturn(uint8_t pin);
+uint16_t digitalReadDirectLutAddrAndCarryReturn(uint8_t pin);
 
-#if f_cpu == 24000000
-  #define f_cpu_mhz 24
-#elif f_cpu == 16000000
-  #define f_cpu_mhz 16
-#elif f_cpu == 12000000
-  #define f_cpu_mhz 12
-#elif f_cpu == 32000000
-  #define f_cpu_mhz 32
-#elif f_cpu == 56000000
-  #define f_cpu_mhz 56
+#if F_CPU == 24000000
+  #define F_CPU_MHZ 24
+#elif F_CPU == 16000000
+  #define F_CPU_MHZ 16
+#elif F_CPU == 12000000
+  #define F_CPU_MHZ 12
+#elif F_CPU == 32000000
+  #define F_CPU_MHZ 32
+#elif F_CPU == 56000000
+  #define F_CPU_MHZ 56
 #endif
 
-#define str_indir(x) #x
-#define str(x) str_indir(x)
+#define STR_INDIR(x) #x
+#define STR(x) STR_INDIR(x)
 
-uint32_t pulsein(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
+uint32_t pulseIn(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
   pin;
   state;
   timeout;
@@ -34,23 +34,23 @@ uint32_t pulsein(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
     //".even                                        \n"
     ";get address of the pin read instruction     \n"
     ";dpl is already ready                        \n"
-    "    lcall _digitalreaddirectlutaddrandcarryreturn \n"
+    "    lcall _digitalReadDirectLutAddrAndCarryReturn \n"
     "; backup dptr                                \n"
 
     ";put loop limit (inc to overflow)            \n"
     ";roughly accurate.                           \n"
-    ";value = 65536-(ms*f_cpu*(1e-6)*34)          \n"
+    ";value = 65536-(ms*F_CPU*(1E-6)*34)          \n"
     ";that is 16bit x 16 bit = 32bit              \n"
     ";https://developer.arm.com/documentation/ka002453/latest/ \n"
-    "    inc _xbus_aux                            \n"  //select dptr1
-    "    mov dptr,#_pulsein_parm_3                \n"
+    "    inc _XBUS_AUX                            \n"  //select DPTR1
+    "    mov dptr,#_pulseIn_PARM_3                \n"
     "    movx a,@dptr                             \n" //low byte of timeout
-    "    mov b,#(("str(f_cpu_mhz)"*34)&0xff)      \n"
+    "    mov b,#(("STR(F_CPU_MHZ)"*34)&0XFF)      \n"
     "    mul ab                                   \n"
     "    mov r1,a                                 \n" //lowest byte of result, we use r1, r2 ,r3 ,r4 for now
     "    mov r2,b                                 \n" //store 2nd byte temporarily
     "    movx a,@dptr                             \n" //low byte of timeout
-    "    mov b,#(("str(f_cpu_mhz)"*34)>>8)        \n"
+    "    mov b,#(("STR(F_CPU_MHZ)"*34)>>8)        \n"
     "    mul ab                                   \n"
     "    add a,r2                                 \n" 
     "    mov r2,a                                 \n" //store 2nd byte temporarily
@@ -59,7 +59,7 @@ uint32_t pulsein(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
     "    mov r3,a                                 \n" //store 3rd byte temporarily
     "    inc dptr                                 \n" 
     "    movx a,@dptr                             \n" //high byte of timeout
-    "    mov b,#(("str(f_cpu_mhz)"*34)&0xff)      \n"
+    "    mov b,#(("STR(F_CPU_MHZ)"*34)&0XFF)      \n"
     "    mul ab                                   \n"
     "    add a,r2                                 \n"
     "    mov r2,a                                 \n" //store 2nd byte
@@ -70,7 +70,7 @@ uint32_t pulsein(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
     "    addc a,#0                                \n"
     "    mov r4,a                                 \n" //store 4th byte temporarily, there might be carry from 3rd byte
     "    movx a,@dptr                             \n" //high byte of timeout
-    "    mov b,#(("str(f_cpu_mhz)"*34)>>8)        \n"
+    "    mov b,#(("STR(F_CPU_MHZ)"*34)>>8)        \n"
     "    mul ab                                   \n"
     "    add a,r3                                 \n"
     "    mov r3,a                                 \n" //store 3rd byte
@@ -90,48 +90,48 @@ uint32_t pulsein(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
     "    clr a                                    \n"
     "    subb a,r4                                \n"
     "    mov r3,a                                 \n"
-    "    dec _xbus_aux                            \n"  //select dptr0 , set it back 
+    "    dec _XBUS_AUX                            \n"  //select DPTR0 , set it back 
 
     ";branching if we meausure high pulse of low  \n"
-    "    inc _xbus_aux                            \n"  //select dptr1
-    "    mov	dptr,#_pulsein_parm_2               \n"  //do not modify the dptr0 for read pin
+    "    inc _XBUS_AUX                            \n"  //select DPTR1
+    "    mov	dptr,#_pulseIn_PARM_2               \n"  //do not modify the DPTR0 for read pin
     "    movx	a,@dptr                             \n"
-    "    dec _xbus_aux                            \n"  //select dptr0 , set it back 
-    "    jz lowpulsedetection$                    \n"
+    "    dec _XBUS_AUX                            \n"  //select DPTR0 , set it back 
+    "    jz lowPulseDetection$                    \n"
 
-    ";highpulse, wait for low, previous pulse end\n"
-    "highpulsewaitprevfinish$:                    \n"
+    ";highPulse, Wait for low, previous pulse end\n"
+    "highPulseWaitPrevFinish$:                    \n"
     "    inc r0                                   \n"
-    "    cjne r0,#0,highpulsewaitprevfinish_overflow_countover$\n"
+    "    cjne r0,#0,highPulseWaitPrevFinish_overflow_countOver$\n"
     "    inc r1                                   \n"
-    "    cjne r1,#0,highpulsewaitprevfinish_overflow_countover$\n"
+    "    cjne r1,#0,highPulseWaitPrevFinish_overflow_countOver$\n"
     "    inc r2                                   \n"
-    "    cjne r2,#0,highpulsewaitprevfinish_overflow_countover$\n"
+    "    cjne r2,#0,highPulseWaitPrevFinish_overflow_countOver$\n"
     "    inc r3                                   \n"
-    "    cjne r3,#0,highpulsewaitprevfinish_overflow_countover$\n"
+    "    cjne r3,#0,highPulseWaitPrevFinish_overflow_countOver$\n"
     ";32bit overflow if get here                  \n"
-    "    ljmp failreturn0$                        \n"
-    "highpulsewaitprevfinish_overflow_countover$: \n"
+    "    ljmp failReturn0$                        \n"
+    "highPulseWaitPrevFinish_overflow_countOver$: \n"
     "    lcall __sdcc_call_dptr                   \n"
-    "    jc highpulsewaitprevfinish$              \n"
+    "    jc highPulseWaitPrevFinish$              \n"
     ";                                            \n"
-    ";highpulse, wait for rise                    \n"
-    "highpulsewaitrise$:                          \n"
+    ";highPulse, Wait for rise                    \n"
+    "highPulseWaitRise$:                          \n"
     "    inc r0                                   \n"
-    "    cjne r0,#0,highpulsewaitrise_overflow_countover$\n"
+    "    cjne r0,#0,highPulseWaitRise_overflow_countOver$\n"
     "    inc r1                                   \n"
-    "    cjne r1,#0,highpulsewaitrise_overflow_countover$\n"
+    "    cjne r1,#0,highPulseWaitRise_overflow_countOver$\n"
     "    inc r2                                   \n"
-    "    cjne r2,#0,highpulsewaitrise_overflow_countover$\n"
+    "    cjne r2,#0,highPulseWaitRise_overflow_countOver$\n"
     "    inc r3                                   \n"
-    "    cjne r3,#0,highpulsewaitrise_overflow_countover$\n"
+    "    cjne r3,#0,highPulseWaitRise_overflow_countOver$\n"
     ";32bit overflow if get here                  \n"
-    "    ljmp failreturn0$                        \n"
-    "highpulsewaitrise_overflow_countover$:       \n"
+    "    ljmp failReturn0$                        \n"
+    "highPulseWaitRise_overflow_countOver$:       \n"
     "    lcall __sdcc_call_dptr                   \n"
-    "    jnc highpulsewaitrise$                   \n"
-    ";highpulse, got rising edge, record micros   \n"
-    "    inc _xbus_aux                            \n"  //select dptr1
+    "    jnc highPulseWaitRise$                   \n"
+    ";highPulse, got rising edge, record micros   \n"
+    "    inc _XBUS_AUX                            \n"  //select DPTR1
     "    push ar0                                 \n"
     "    push ar1                                 \n"
     "    push ar2                                 \n"
@@ -141,67 +141,67 @@ uint32_t pulsein(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
     "    pop ar2                                  \n"
     "    pop ar1                                  \n"
     "    pop ar0                                  \n"
-    "    mov	r4,dpl                              \n"  //do not modify the dptr0 for read pin
+    "    mov	r4,dpl                              \n"  //do not modify the DPTR0 for read pin
     "    mov	r5,dph                              \n"
     "    mov  r6,b                                \n"
     "    mov  r7,a                                \n"
-    "    dec _xbus_aux                            \n"  //select dptr0 , set it back 
+    "    dec _XBUS_AUX                            \n"  //select DPTR0 , set it back 
     ";                                            \n"
-    ";highpulse, wait for fall                    \n"
-    "highpulsewaitfall$:                          \n"
+    ";highPulse, Wait for fall                    \n"
+    "highPulseWaitFall$:                          \n"
     "    inc r0                                   \n"
-    "    cjne r0,#0,highpulsewaitfall_overflow_countover$\n"
+    "    cjne r0,#0,highPulseWaitFall_overflow_countOver$\n"
     "    inc r1                                   \n"
-    "    cjne r1,#0,highpulsewaitfall_overflow_countover$\n"
+    "    cjne r1,#0,highPulseWaitFall_overflow_countOver$\n"
     "    inc r2                                   \n"
-    "    cjne r2,#0,highpulsewaitfall_overflow_countover$\n"
+    "    cjne r2,#0,highPulseWaitFall_overflow_countOver$\n"
     "    inc r3                                   \n"
-    "    cjne r3,#0,highpulsewaitfall_overflow_countover$\n"
+    "    cjne r3,#0,highPulseWaitFall_overflow_countOver$\n"
     ";32bit overflow if get here                  \n"
-    "    ljmp failreturn0$                        \n"
-    "highpulsewaitfall_overflow_countover$:       \n"
+    "    ljmp failReturn0$                        \n"
+    "highPulseWaitFall_overflow_countOver$:       \n"
     "    lcall __sdcc_call_dptr                   \n"
-    "    jc highpulsewaitfall$                    \n"
-    ";highpulse, got falling edge, record micros  \n"
+    "    jc highPulseWaitFall$                    \n"
+    ";highPulse, got falling edge, record micros  \n"
     ";dptr no longer needed, r0~3 no longer needed\n"
     ";call micros again to get the difference     \n"
-    "    ljmp calculatemicrosdiff$                \n"
+    "    ljmp calculateMicrosDiff$                \n"
 
-    "lowpulsedetection$:                          \n"
+    "lowPulseDetection$:                          \n"
 
-    ";lowpulse, wait for high, previous pulse end\n"
-    "lowpulsewaitprevfinish$:                    \n"
+    ";lowPulse, Wait for high, previous pulse end\n"
+    "lowPulseWaitPrevFinish$:                    \n"
     "    inc r0                                   \n"
-    "    cjne r0,#0,lowpulsewaitprevfinish_overflow_countover$\n"
+    "    cjne r0,#0,lowPulseWaitPrevFinish_overflow_countOver$\n"
     "    inc r1                                   \n"
-    "    cjne r1,#0,lowpulsewaitprevfinish_overflow_countover$\n"
+    "    cjne r1,#0,lowPulseWaitPrevFinish_overflow_countOver$\n"
     "    inc r2                                   \n"
-    "    cjne r2,#0,lowpulsewaitprevfinish_overflow_countover$\n"
+    "    cjne r2,#0,lowPulseWaitPrevFinish_overflow_countOver$\n"
     "    inc r3                                   \n"
-    "    cjne r3,#0,lowpulsewaitprevfinish_overflow_countover$\n"
+    "    cjne r3,#0,lowPulseWaitPrevFinish_overflow_countOver$\n"
     ";32bit overflow if get here                  \n"
-    "    ljmp failreturn0$                        \n"
-    "lowpulsewaitprevfinish_overflow_countover$: \n"
+    "    ljmp failReturn0$                        \n"
+    "lowPulseWaitPrevFinish_overflow_countOver$: \n"
     "    lcall __sdcc_call_dptr                   \n"
-    "    jnc lowpulsewaitprevfinish$              \n"
+    "    jnc lowPulseWaitPrevFinish$              \n"
     ";                                            \n"
-    ";lowpulse, wait for fall                    \n"
-    "lowpulsewaitfall$:                          \n"
+    ";lowPulse, Wait for fall                    \n"
+    "lowPulseWaitFall$:                          \n"
     "    inc r0                                   \n"
-    "    cjne r0,#0,lowpulsewaitfall_overflow_countover$\n"
+    "    cjne r0,#0,lowPulseWaitFall_overflow_countOver$\n"
     "    inc r1                                   \n"
-    "    cjne r1,#0,lowpulsewaitfall_overflow_countover$\n"
+    "    cjne r1,#0,lowPulseWaitFall_overflow_countOver$\n"
     "    inc r2                                   \n"
-    "    cjne r2,#0,lowpulsewaitfall_overflow_countover$\n"
+    "    cjne r2,#0,lowPulseWaitFall_overflow_countOver$\n"
     "    inc r3                                   \n"
-    "    cjne r3,#0,lowpulsewaitfall_overflow_countover$\n"
+    "    cjne r3,#0,lowPulseWaitFall_overflow_countOver$\n"
     ";32bit overflow if get here                  \n"
-    "    ljmp failreturn0$                        \n"
-    "lowpulsewaitfall_overflow_countover$:       \n"
+    "    ljmp failReturn0$                        \n"
+    "lowPulseWaitFall_overflow_countOver$:       \n"
     "    lcall __sdcc_call_dptr                   \n"
-    "    jnc lowpulsewaitfall$                   \n"
-    ";lowpulse, got falling edge, record micros   \n"
-    "    inc _xbus_aux                            \n"  //select dptr1
+    "    jnc lowPulseWaitFall$                   \n"
+    ";lowPulse, got falling edge, record micros   \n"
+    "    inc _XBUS_AUX                            \n"  //select DPTR1
     "    push ar0                                 \n"
     "    push ar1                                 \n"
     "    push ar2                                 \n"
@@ -211,33 +211,33 @@ uint32_t pulsein(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
     "    pop ar2                                  \n"
     "    pop ar1                                  \n"
     "    pop ar0                                  \n"
-    "    mov	r4,dpl                              \n"  //do not modify the dptr0 for read pin
+    "    mov	r4,dpl                              \n"  //do not modify the DPTR0 for read pin
     "    mov	r5,dph                              \n"
     "    mov  r6,b                                \n"
     "    mov  r7,a                                \n"
-    "    dec _xbus_aux                            \n"  //select dptr0 , set it back 
+    "    dec _XBUS_AUX                            \n"  //select DPTR0 , set it back 
     ";                                            \n"
-    ";lowpulse, wait for rise                    \n"
-    "lowpulsewaitrise$:                          \n"
+    ";lowPulse, Wait for rise                    \n"
+    "lowPulseWaitRise$:                          \n"
     "    inc r0                                   \n"
-    "    cjne r0,#0,lowpulsewaitrise_overflow_countover$\n"
+    "    cjne r0,#0,lowPulseWaitRise_overflow_countOver$\n"
     "    inc r1                                   \n"
-    "    cjne r1,#0,lowpulsewaitrise_overflow_countover$\n"
+    "    cjne r1,#0,lowPulseWaitRise_overflow_countOver$\n"
     "    inc r2                                   \n"
-    "    cjne r2,#0,lowpulsewaitrise_overflow_countover$\n"
+    "    cjne r2,#0,lowPulseWaitRise_overflow_countOver$\n"
     "    inc r3                                   \n"
-    "    cjne r3,#0,lowpulsewaitrise_overflow_countover$\n"
+    "    cjne r3,#0,lowPulseWaitRise_overflow_countOver$\n"
     ";32bit overflow if get here                  \n"
-    "    ljmp failreturn0$                        \n"
-    "lowpulsewaitrise_overflow_countover$:       \n"
+    "    ljmp failReturn0$                        \n"
+    "lowPulseWaitRise_overflow_countOver$:       \n"
     "    lcall __sdcc_call_dptr                   \n"
-    "    jc lowpulsewaitrise$                    \n"
-    ";lowpulse, got rising edge, record micros  \n"
+    "    jc lowPulseWaitRise$                    \n"
+    ";lowPulse, got rising edge, record micros  \n"
     ";dptr no longer needed, r0~3 no longer needed\n"
     ";call micros again to get the difference     \n"
-    "    ljmp calculatemicrosdiff$                \n"
+    "    ljmp calculateMicrosDiff$                \n"
 
-    "calculatemicrosdiff$:                        \n"
+    "calculateMicrosDiff$:                        \n"
     "    push ar4                                 \n"
     "    push ar5                                 \n"
     "    push ar6                                 \n"
@@ -262,7 +262,7 @@ uint32_t pulsein(uint8_t pin, __xdata uint8_t state, __xdata uint16_t timeout) {
     "    subb	a,r7                                \n"
     "    ret                                      \n"
  
-    "failreturn0$:                                \n"
+    "failReturn0$:                                \n"
     "    clr a                                    \n"
     "    mov dpl,a                                \n"
     "    mov dph,a                                \n"

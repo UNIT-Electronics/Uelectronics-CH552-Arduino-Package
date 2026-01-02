@@ -1,8 +1,8 @@
 /*
- created by deqing sun for use with ch55xduino
+ created by Deqing Sun for use with CH55xduino
  */
 
-#ifndef user_usb_ram
+#ifndef USER_USB_RAM
 
 // clang-format off
 #include <stdint.h>
@@ -11,138 +11,138 @@
 #include "include/ch5xx_usb.h"
 // clang-format on
 
-extern __xdata uint8_t ep0buffer[];
-extern __xdata uint8_t ep2buffer[];
+extern __xdata uint8_t Ep0Buffer[];
+extern __xdata uint8_t Ep2Buffer[];
 
-#define line_codeing_size 7
-__xdata uint8_t linecoding[line_codeing_size] = {
+#define LINE_CODEING_SIZE 7
+__xdata uint8_t LineCoding[LINE_CODEING_SIZE] = {
     0x00, 0xe1, 0x00, 0x00,
-    0x00, 0x00, 0x08}; // initialize for baudrate 57600, 1 stopbit, no parity,
+    0x00, 0x00, 0x08}; // Initialize for baudrate 57600, 1 stopbit, No parity,
                        // eight data bits
 
-volatile __xdata uint8_t usbbytecountep2 =
-    0; // bytes of received data on usb endpoint
-volatile __xdata uint8_t usbbufoutpointep2 = 0; // data pointer for fetching
+volatile __xdata uint8_t USBByteCountEP2 =
+    0; // Bytes of received data on USB endpoint
+volatile __xdata uint8_t USBBufOutPointEP2 = 0; // Data pointer for fetching
 
-volatile __bit uppoint2busyflag = 0; // flag of whether upload pointer is busy
-volatile __xdata uint8_t controllinestate = 0;
+volatile __bit UpPoint2BusyFlag = 0; // Flag of whether upload pointer is busy
+volatile __xdata uint8_t controlLineState = 0;
 
-__xdata uint8_t usbwritepointer = 0;
+__xdata uint8_t usbWritePointer = 0;
 
-void delaymicroseconds(__data uint16_t us);
+void delayMicroseconds(__data uint16_t us);
 
-void resetcdcparameters() {
+void resetCDCParameters() {
 
-  usbbytecountep2 = 0; // bytes of received data on usb endpoint
-  uppoint2busyflag = 0;
+  USBByteCountEP2 = 0; // Bytes of received data on USB endpoint
+  UpPoint2BusyFlag = 0;
 }
 
-void setlinecodinghandler() {
+void setLineCodingHandler() {
   for (__data uint8_t i = 0;
-       i < ((line_codeing_size <= usb_rx_len) ? line_codeing_size : usb_rx_len);
+       i < ((LINE_CODEING_SIZE <= USB_RX_LEN) ? LINE_CODEING_SIZE : USB_RX_LEN);
        i++) {
-    linecoding[i] = ep0buffer[i];
+    LineCoding[i] = Ep0Buffer[i];
   }
 
-  //!!!!!config_uart0(linecoding);
+  //!!!!!Config_Uart0(LineCoding);
 }
 
-uint16_t getlinecodinghandler() {
-  __data uint16_t returnlen;
+uint16_t getLineCodingHandler() {
+  __data uint16_t returnLen;
 
-  returnlen = line_codeing_size;
-  for (__data uint8_t i = 0; i < returnlen; i++) {
-    ep0buffer[i] = linecoding[i];
+  returnLen = LINE_CODEING_SIZE;
+  for (__data uint8_t i = 0; i < returnLen; i++) {
+    Ep0Buffer[i] = LineCoding[i];
   }
 
-  return returnlen;
+  return returnLen;
 }
 
-void setcontrollinestatehandler() {
-  controllinestate = ep0buffer[2];
+void setControlLineStateHandler() {
+  controlLineState = Ep0Buffer[2];
 
-  // we check dtr state to determine if host port is open (bit 0 of linestate).
-  if (((controllinestate & 0x01) == 0) &&
-      (*((__xdata uint32_t *)linecoding) ==
+  // We check DTR state to determine if host port is open (bit 0 of lineState).
+  if (((controlLineState & 0x01) == 0) &&
+      (*((__xdata uint32_t *)LineCoding) ==
        1200)) { // both linecoding and sdcc are little-endian
 
-#if boot_load_addr == 0x3800
-    usb_ctrl = 0;
-    ea = 0; // disabling all interrupts is required.
-    tmod = 0;
-    delaymicroseconds(50000);
-    delaymicroseconds(50000);
+#if BOOT_LOAD_ADDR == 0x3800
+    USB_CTRL = 0;
+    EA = 0; // Disabling all interrupts is required.
+    TMOD = 0;
+    delayMicroseconds(50000);
+    delayMicroseconds(50000);
 
-    __asm__("lcall #0x3800"); // jump to bootloader code
-
-    while (1)
-      ;
-#elif defined(ch559) && (boot_load_addr == 0xf400)
-    usb_ctrl = 0;
-    ea = 0; // disabling all interrupts is required.
-    delaymicroseconds(50000);
-    delaymicroseconds(50000);
-
-    __asm__("lcall #0xf400"); // jump to bootloader code
+    __asm__("lcall #0x3800"); // Jump to bootloader code
 
     while (1)
       ;
-#elif boot_load_addr == 0xf400
-    // todo: not working well, ch549 doesn't support direct jump
+#elif defined(CH559) && (BOOT_LOAD_ADDR == 0xF400)
+    USB_CTRL = 0;
+    EA = 0; // Disabling all interrupts is required.
+    delayMicroseconds(50000);
+    delayMicroseconds(50000);
+
+    __asm__("lcall #0xF400"); // Jump to bootloader code
+
+    while (1)
+      ;
+#elif BOOT_LOAD_ADDR == 0xF400
+    // todo: not working well, CH549 doesn't support direct jump
 #endif
   }
 }
 
-uint8_t usbserial_wait_uppoint2busyflag_clear() {
-  __data uint16_t waitwritecount = 0;
-  while (uppoint2busyflag) { // wait for 250ms or give up, on my mac it takes
+uint8_t USBSerial_wait_UpPoint2BusyFlag_clear() {
+  __data uint16_t waitWriteCount = 0;
+  while (UpPoint2BusyFlag) { // wait for 250ms or give up, on my mac it takes
                              // about 256us
-    waitwritecount++;
-    delaymicroseconds(5);
-    if (waitwritecount >= 50000)
+    waitWriteCount++;
+    delayMicroseconds(5);
+    if (waitWriteCount >= 50000)
       return 0;
   }
   return 1;
 }
 
-bool usbserial() {
+bool USBSerial() {
   __data bool result = false;
-  if (controllinestate > 0)
+  if (controlLineState > 0)
     result = true;
   // delay(10); not doing it for now
   return result;
 }
 
-void usbserial_flush(void) {
-  if (!uppoint2busyflag && usbwritepointer > 0) {
-    uep2_t_len = usbwritepointer;
-    uep2_ctrl = uep2_ctrl & ~mask_uep_t_res | uep_t_res_ack; // respond ack
-    uppoint2busyflag = 1;
+void USBSerial_flush(void) {
+  if (!UpPoint2BusyFlag && usbWritePointer > 0) {
+    UEP2_T_LEN = usbWritePointer;
+    UEP2_CTRL = UEP2_CTRL & ~MASK_UEP_T_RES | UEP_T_RES_ACK; // Respond ACK
+    UpPoint2BusyFlag = 1;
 
-    if (usbwritepointer ==
-        max_packet_size) { // write empty packet for end transmission. needed
+    if (usbWritePointer ==
+        MAX_PACKET_SIZE) { // write empty packet for end transmission. Needed
                            // for windows.
-      if (usbserial_wait_uppoint2busyflag_clear()) {
-        uep2_t_len = 0;
-        uep2_ctrl = uep2_ctrl & ~mask_uep_t_res | uep_t_res_ack; // respond ack
-        uppoint2busyflag = 1;
+      if (USBSerial_wait_UpPoint2BusyFlag_clear()) {
+        UEP2_T_LEN = 0;
+        UEP2_CTRL = UEP2_CTRL & ~MASK_UEP_T_RES | UEP_T_RES_ACK; // Respond ACK
+        UpPoint2BusyFlag = 1;
       }
     }
-    usbwritepointer = 0;
+    usbWritePointer = 0;
   }
 }
 
-uint8_t usbserial_write(__data char c) { // 3 bytes generic pointer
-  if (controllinestate > 0) {
+uint8_t USBSerial_write(__data char c) { // 3 bytes generic pointer
+  if (controlLineState > 0) {
     while (true) {
-      if (usbserial_wait_uppoint2busyflag_clear() == 0)
+      if (USBSerial_wait_UpPoint2BusyFlag_clear() == 0)
         return 0;
-      if (usbwritepointer < max_packet_size) {
-        ep2buffer[max_packet_size + usbwritepointer] = c;
-        usbwritepointer++;
+      if (usbWritePointer < MAX_PACKET_SIZE) {
+        Ep2Buffer[MAX_PACKET_SIZE + usbWritePointer] = c;
+        usbWritePointer++;
         return 1;
       } else {
-        usbserial_flush(); // go back to first while
+        USBSerial_flush(); // go back to first while
       }
     }
   }
@@ -150,20 +150,20 @@ uint8_t usbserial_write(__data char c) { // 3 bytes generic pointer
 }
 
 uint8_t
-usbserial_print_n(uint8_t *__xdata buf,
+USBSerial_print_n(uint8_t *__xdata buf,
                   __xdata int len) { // 3 bytes generic pointer, not using
-                                     // usbserial_write for a bit efficiency
-  if (controllinestate > 0) {
+                                     // USBSerial_write for a bit efficiency
+  if (controlLineState > 0) {
     while (len > 0) {
-      if (usbserial_wait_uppoint2busyflag_clear() == 0)
+      if (USBSerial_wait_UpPoint2BusyFlag_clear() == 0)
         return 0;
       while (len > 0) {
-        if (usbwritepointer < max_packet_size) {
-          ep2buffer[max_packet_size + usbwritepointer] = *buf++;
-          usbwritepointer++;
+        if (usbWritePointer < MAX_PACKET_SIZE) {
+          Ep2Buffer[MAX_PACKET_SIZE + usbWritePointer] = *buf++;
+          usbWritePointer++;
           len--;
         } else {
-          usbserial_flush(); // go back to first while
+          USBSerial_flush(); // go back to first while
           break;
         }
       }
@@ -172,35 +172,35 @@ usbserial_print_n(uint8_t *__xdata buf,
   return 0;
 }
 
-uint8_t usbserial_available() { return usbbytecountep2; }
+uint8_t USBSerial_available() { return USBByteCountEP2; }
 
-char usbserial_read() {
-  if (usbbytecountep2 == 0)
+char USBSerial_read() {
+  if (USBByteCountEP2 == 0)
     return 0;
-  __data char data = ep2buffer[usbbufoutpointep2];
-  usbbufoutpointep2++;
-  usbbytecountep2--;
-  if (usbbytecountep2 == 0) {
-    uep2_ctrl = uep2_ctrl & ~mask_uep_r_res | uep_r_res_ack;
+  __data char data = Ep2Buffer[USBBufOutPointEP2];
+  USBBufOutPointEP2++;
+  USBByteCountEP2--;
+  if (USBByteCountEP2 == 0) {
+    UEP2_CTRL = UEP2_CTRL & ~MASK_UEP_R_RES | UEP_R_RES_ACK;
   }
   return data;
 }
 
-void usb_ep2_in() {
-  uep2_t_len = 0; // no data to send anymore
-  uep2_ctrl =
-      uep2_ctrl & ~mask_uep_t_res | uep_t_res_nak; // respond nak by default
-  uppoint2busyflag = 0;                            // clear busy flag
+void USB_EP2_IN() {
+  UEP2_T_LEN = 0; // No data to send anymore
+  UEP2_CTRL =
+      UEP2_CTRL & ~MASK_UEP_T_RES | UEP_T_RES_NAK; // Respond NAK by default
+  UpPoint2BusyFlag = 0;                            // Clear busy flag
 }
 
-void usb_ep2_out() {
-  if (u_tog_ok) // discard unsynchronized packets
+void USB_EP2_OUT() {
+  if (U_TOG_OK) // Discard unsynchronized packets
   {
-    usbbytecountep2 = usb_rx_len;
-    usbbufoutpointep2 = 0; // reset data pointer for fetching
-    if (usbbytecountep2)
-      uep2_ctrl = uep2_ctrl & ~mask_uep_r_res |
-                  uep_r_res_nak; // respond nak after a packet. let main code
+    USBByteCountEP2 = USB_RX_LEN;
+    USBBufOutPointEP2 = 0; // Reset Data pointer for fetching
+    if (USBByteCountEP2)
+      UEP2_CTRL = UEP2_CTRL & ~MASK_UEP_R_RES |
+                  UEP_R_RES_NAK; // Respond NAK after a packet. Let main code
                                  // change response after handling.
   }
 }
