@@ -57,7 +57,7 @@ __code uint8_t digital_pin_to_pwm_PGM[] = {
     NOT_ON_PWM, // not exist
 };
 
-__code uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+__code uint8_t digital_pin_to_port_PGM[] = {
     P0PORT, // PIN00
     P0PORT,     P0PORT, P0PORT, P0PORT, P0PORT, P0PORT, P0PORT,
     NOT_A_PORT, // not exist
