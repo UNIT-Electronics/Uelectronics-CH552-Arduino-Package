@@ -1,16 +1,18 @@
 /*
-  PWM - Pulse Width Modulation Example
+  PWM Buzzer Example
 
-  Demonstrates the use of hardware PWM to fade an LED.
-  Gradually increases and decreases the LED brightness using PWM.
-  Also prints the current PWM value to USB Serial.
-
-  The CH552 has hardware PWM1 on P1.5 and PWM2 on P1.4
-  For testing, this example uses pin 11 (P1.1) with analogWrite()
-  Note: analogWrite() on non-PWM pins may not produce smooth fading
+  Demonstrates the use of PWM to generate different beep patterns on a buzzer.
+  Uses analogWrite() with 50% duty cycle and different on/off timings
+  to create various sound patterns.
 
   Circuit:
-  - LED with 220Ω resistor connected to P1.1 (pin 11)
+  - Passive buzzer connected to P3.4 (pin 34)
+  - Connect buzzer (+) to P3.4 and (-) to GND
+
+  Note:
+  - analogWrite(pin, 128) generates ~50% duty cycle square wave
+  - Different delay patterns create different beep sounds
+  - For musical notes, a tone() function would be needed
 
   This example code is in the public domain.
 
@@ -20,49 +22,60 @@
 
 #include <devlab_ch55x.h>
 
-// Test pin (default: 11 = P1.1)
-#define LED_PIN 11
+// Buzzer pin: P3.4 (pin 34)
+#define BUZZER_PIN 34
 
-int brightness = 0;      // LED brightness (0-255)
-int fadeAmount = 5;      // Amount to change brightness each step
+void beep(uint16_t duration) {
+  // Turn on buzzer with 50% duty cycle
+  analogWrite(BUZZER_PIN, 128);
+  delay(duration);
+  
+  // Turn off buzzer
+  analogWrite(BUZZER_PIN, 0);
+}
 
 void setup() {
-  // Configure pin as output
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
   
-  USBSerial_println_s("PWM Fade Example Started");
-  USBSerial_println_s("LED on pin 11 (P1.1)");
-  USBSerial_println_s("PWM Range: 0-255");
+  USBSerial_println_s("PWM Buzzer Example");
+  USBSerial_println_s("Buzzer on pin 34 (P3.4)");
+  USBSerial_println_s("Playing beep patterns");
   USBSerial_println_s("------------------------------------");
+  
+  delay(1000);
 }
 
 void loop() {
-  // Set the LED brightness
-  analogWrite(LED_PIN, brightness);
-  
-  // Print current PWM value
-  USBSerial_print_s("PWM Value: ");
-  USBSerial_print_u(brightness);
-  
-  // Print brightness percentage
-  uint16_t percent = (brightness * 100) / 255;
-  USBSerial_print_s(" (");
-  USBSerial_print_u(percent);
-  USBSerial_println_s("%)");
-  
-  // Change brightness for next iteration
-  brightness = brightness + fadeAmount;
-  
-  // Reverse direction at the ends of the fade
-  if (brightness <= 0 || brightness >= 255) {
-    fadeAmount = -fadeAmount;
-    
-    if (brightness <= 0) {
-      USBSerial_println_s(">>> Fading UP <<<");
-    } else {
-      USBSerial_println_s(">>> Fading DOWN <<<");
-    }
+  // Pattern 1: Short beeps
+  USBSerial_println_s("Pattern 1: Short beeps");
+  for (uint8_t i = 0; i < 3; i++) {
+    beep(100);
+    delay(100);
   }
+  delay(1000);
   
-  delay(30);  // Wait 30ms to see the fade effect
+  // Pattern 2: Long beep
+  USBSerial_println_s("Pattern 2: Long beep");
+  beep(500);
+  delay(1000);
+  
+  // Pattern 3: Fast pulses
+  USBSerial_println_s("Pattern 3: Fast pulses");
+  for (uint8_t i = 0; i < 10; i++) {
+    beep(50);
+    delay(50);
+  }
+  delay(1000);
+  
+  // Pattern 4: Alarm pattern
+  USBSerial_println_s("Pattern 4: Alarm");
+  for (uint8_t i = 0; i < 2; i++) {
+    beep(200);
+    delay(200);
+    beep(200);
+    delay(500);
+  }
+  delay(2000);
+  
+  USBSerial_println_s("-------- Repeating --------");
 }

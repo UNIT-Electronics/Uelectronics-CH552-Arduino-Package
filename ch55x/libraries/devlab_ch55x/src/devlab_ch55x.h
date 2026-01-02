@@ -25,3 +25,6 @@
 
 // Servo Library
 #include "Servo.h"
+
+// NeoPixel (WS2812B) Library
+#include "neo.h"
