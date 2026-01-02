@@ -4,7 +4,7 @@
 
 #ifndef user_usb_ram
 
-#include "usbconstant.h"
+#include "USBconstant.h"
 
 // device descriptor
 __code usb_descriptor_device_t devicedescriptor = {

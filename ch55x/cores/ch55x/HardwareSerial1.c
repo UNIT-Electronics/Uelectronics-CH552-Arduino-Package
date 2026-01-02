@@ -1,4 +1,4 @@
-#include "hardwareserial.h"
+#include "HardwareSerial.h"
 
 __xdata unsigned char serial1initialized;
 

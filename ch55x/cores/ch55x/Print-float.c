@@ -28,7 +28,7 @@
 // #include <stdlib.h>
 // #include <stdio.h>
 // #include <string.h>
-#include "arduino.h"
+#include "Arduino.h"
 #include <math.h>
 
 #include "print.h"

@@ -1,4 +1,4 @@
-#include <arduino.h>
+#include "Arduino.h"
 
 #if defined(ch551) || defined(ch552)
 uint16_t digitalreaddirectlutaddrandcarryreturn(uint8_t pin) {

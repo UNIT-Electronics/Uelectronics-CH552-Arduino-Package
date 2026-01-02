@@ -1,4 +1,4 @@
-#include <arduino.h>
+#include "Arduino.h"
 
 #if defined(ch551) || defined(ch552)
 void digitalwritehighdirectlut(uint8_t pin) {

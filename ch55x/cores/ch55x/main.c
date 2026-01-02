@@ -17,7 +17,7 @@
   foundation, inc., 51 franklin st, fifth floor, boston, ma  02110-1301  usa
 */
 
-#include <arduino.h>
+#include "Arduino.h"
 
 // make sure to define prototypes for all used interrupts
 // usbinterrupt does not need to saves the context

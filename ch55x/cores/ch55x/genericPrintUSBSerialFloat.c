@@ -4,7 +4,7 @@
  float has a separate file to avoid unnecessary linking
  */
 
-#include "arduino.h"
+#include "Arduino.h"
 
 void usbserial_print_f_func(__data float f) {
   print_print_f(usbserial_write, f);

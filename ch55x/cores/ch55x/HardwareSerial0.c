@@ -2,7 +2,7 @@
  created by deqing sun for use with ch55xduino
  */
 
-#include "hardwareserial.h"
+#include "HardwareSerial.h"
 
 __xdata unsigned char serial0initialized;
 

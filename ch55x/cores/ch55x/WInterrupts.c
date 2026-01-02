@@ -6,7 +6,7 @@
 
 void nothing(void) {}
 
-__xdata voidfuncptr intfunc[external_num_interrupts] = {
+__xdata voidFuncPtr intfunc[external_num_interrupts] = {
 #if external_num_interrupts > 1
     nothing,
 #endif

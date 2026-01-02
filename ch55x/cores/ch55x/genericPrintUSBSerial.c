@@ -3,7 +3,7 @@
  need sdcc 13402 or higher version
  */
 
-#include "arduino.h"
+#include "Arduino.h"
 
 void printnothing() { // only appear in this file
 }

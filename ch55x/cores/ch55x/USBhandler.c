@@ -4,9 +4,9 @@
 
 #ifndef user_usb_ram
 
-#include "usbhandler.h"
+#include "USBhandler.h"
 
-#include "usbconstant.h"
+#include "USBconstant.h"
 
 // cdc functions:
 void resetcdcparameters();

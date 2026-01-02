@@ -1,4 +1,4 @@
-#include "hardwareserial.h"
+#include "HardwareSerial.h"
 
 __xdata uint8_t
     receive_uart1_buf[serial1_rx_buffer_size]; // arduino style serial buffer

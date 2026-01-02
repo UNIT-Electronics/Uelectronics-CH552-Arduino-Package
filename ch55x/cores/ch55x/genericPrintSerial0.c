@@ -3,7 +3,7 @@
  need sdcc 13402 or higher version
  */
 
-#include "arduino.h"
+#include "Arduino.h"
 
 void serial0_print_i_func(__data long i) { print_print_i(serial0_write, i); }
 void serial0_print_ib_func(__data long i, __xdata uint8_t base) {

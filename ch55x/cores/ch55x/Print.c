@@ -28,7 +28,7 @@
 
 // clang-format off
 #include <math.h>
-#include "arduino.h"
+#include "Arduino.h"
 #include "print.h"
 // clang-format on
 
