@@ -10,7 +10,7 @@
             },
             "platforms" : [
                 {
-                    "name": "CH55x SketchLab",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.1",
                     "category": "Unit Electronics",
@@ -35,7 +35,7 @@
                     "size": "100902"
                 },
                 {
-                    "name": "CH55x SketchLab",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.2",
                     "category": "Unit Electronics",
@@ -60,7 +60,7 @@
                     "size": "105000"
                 },
                 {
-                    "name": "CH55x SketchLab",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.3",
                     "category": "Unit Electronics",
@@ -85,7 +85,7 @@
                     "size": "110500"
                 },
                 {
-                    "name": "CH55x SketchLab",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.4",
                     "category": "Unit Electronics",
@@ -110,7 +110,7 @@
                     "size": "151813"
                 },
                 {
-                    "name": "CH55x SketchLab",
+                    "name": "Devlab_CH55x",
                     "architecture": "mcs51",
                     "version": "0.0.5",
                     "category": "Unit Electronics",
