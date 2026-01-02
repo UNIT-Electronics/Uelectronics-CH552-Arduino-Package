@@ -1,5 +1,5 @@
 Nombre del archivo comprimido: devlab_ch55x_version_2026-01-02.tar.bz2
 Datos del archivo comprimido:
-Tamaño del archivo: 176845 bytes
+Tamaño del archivo: 85808 bytes
 Tipo de archivo: bz2
-SHA256 del archivo: 53166731180a8f7a1a6b429dfef65fa057d8089f681d22b2b28905daf83dbc79
+SHA256 del archivo: 980072682bf58cca1563bc18aa4c86c0fded96d10e9975b53083476a0902cbaa
