@@ -1,6 +1,6 @@
-# Uelectronics-CH552-Arduino-Package v3
+# Devlab_CH55x - CH55x Arduino Core
 
-Welcome to the Uelectronics-CH552-Arduino-Package! This package offers an Arduino core that is a ported version of [CH55xduino](https://github.com/DeqingSun/ch55xduino/tree/ch55xduino), building upon the groundwork laid by [DeqingSun](https://github.com/DeqingSun). Specifically tailored for the CH55x microcontroller, this port utilizes the gcc compiler for seamless integration with Arduino development environments. If you're ready to explore this package further, delve into the details below on supported boards and installation instructions via the Arduino Boards Manager. Let's get started!
+Welcome to Devlab_CH55x! This package provides a standardized and optimized Arduino core for the CH55x microcontroller. Based on the excellent [CH55xduino](https://github.com/DeqingSun/ch55xduino/tree/ch55xduino) project by [DeqingSun](https://github.com/DeqingSun), this version features code standardization with all filenames and code in lowercase for consistency across platforms.
 
 ## Supported Boards
 - CH552
@@ -12,7 +12,7 @@ To install, follow these steps:
 1. Open the Arduino IDE and navigate to File -> Preferences.
 2. In the dialog that appears, enter the following URL into the "Additional Boards Manager URLs" field: 
 
-   > https://raw.githubusercontent.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/refs/heads/develop/package_duino_mcs51_index.json
+   > https://raw.githubusercontent.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/refs/heads/main/package_duino_mcs51_index.json
    
    ![Adding URL](./images/board_json.png)
 
@@ -21,6 +21,13 @@ To install, follow these steps:
 5. Type "CH" in the search box and select "Install".
    
    ![Boards Manager](./images/manager.png)
+
+## Code Standardization
+This release (v0.0.5) includes significant improvements:
+- **Lowercase File Naming**: All source files (*.c, *.ino, Makefile) are now in lowercase for cross-platform compatibility
+- **Consistent Code Style**: Code content standardized while preserving comments and preprocessor directives
+- **Unified Library Structure**: All examples consolidated under `devlab_ch55x` library
+- **Examples Included**: ADC, Blink, PWM, Timer, USB Serial, WS2812 NeoPixel, OLED displays, and more
 
 ## License
 This package is distributed under the GNU Lesser General Public License, Version 2.1, February 1999.
