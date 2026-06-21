@@ -141,6 +141,34 @@
                     "archiveFileName": "devlab_ch55x_version_2026-01-02.tar.bz2",
                     "checksum": "SHA-256:162014e269b7502553f3c20a667629a1cb6f5f1fbf3f09a9488ddd5078c928fa",
                     "size": "99768"
+                },
+                {
+                    "name": "Devlab_CH55x",
+                    "architecture": "mcs51",
+                    "version": "0.0.6",
+                    "category": "Unit Electronics",
+                    "help": {
+                        "online": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package"
+                    },
+                    "boards": [
+                        {"name": "CH552 Board"}
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "devlabtools",
+                            "version": "2026.06.21",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.6/devlab_ch55x_version_2026-06-21.tar.bz2",
+                    "archiveFileName": "devlab_ch55x_version_2026-06-21.tar.bz2",
+                    "checksum": "SHA-256:c6f6eaa35ecf342479f06708368b156406cf24e2ba7730991538bff1951968ed",
+                    "size": "99218"
                 }
             ],
 
@@ -174,6 +202,37 @@
                             "archiveFileName": "ch55xduino-tools_mingw32-2023.10.10.tar.bz2",
                             "checksum": "SHA-256:423f8cf886bbb70a0fd388080a833c50c877da370fb48bd0d2c4d1d34ecec63f",
                             "size": "698485"
+                        }
+                    ]
+                },
+                {
+                    "name": "devlabtools",
+                    "version": "2026.06.21",
+                    "systems": [
+                        {
+                            "host": "aarch64-linux-gnu",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_aarch64-2023.10.10.tar.bz2",
+                            "archiveFileName": "ch55xduino-tools_aarch64-2023.10.10.tar.bz2",
+                            "checksum": "SHA-256:986950420d1ae77b3dd6ebfa7c4cc7dfc6240f1c551c3d6dbec7158ff7a47017",
+                            "size": "18884"
+                        },{
+                            "host": "x86_64-pc-linux-gnu",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_linux64-2023.10.10.tar.bz2",
+                            "archiveFileName": "ch55xduino-tools_linux64-2023.10.10.tar.bz2",
+                            "checksum": "SHA-256:344d13237996f89150cf4b9f7ee9a675217f5bd83aad571162d0efedec3d7a2a",
+                            "size": "19333"
+                        },{
+                            "host": "x86_64-apple-darwin",
+                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_macosx-2023.10.10.tar.bz2",
+                            "archiveFileName": "ch55xduino-tools_macosx-2023.10.10.tar.bz2",
+                            "checksum": "SHA-256:1dde8c8ae4d46748cd14e2983c79effeac5444365c9cea7a70230cf030863b09",
+                            "size": "54385"
+                        },{
+                            "host": "i686-mingw32",
+                            "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.6/ch55xduino-tools_mingw32-2026.06.21.tar.bz2",
+                            "archiveFileName": "ch55xduino-tools_mingw32-2026.06.21.tar.bz2",
+                            "checksum": "SHA-256:bde033034222917c6dd5029f1bb2c55f353cc02710c4f2786d5e20b7eee2f7ed",
+                            "size": "696737"
                         }
                     ]
                 },
