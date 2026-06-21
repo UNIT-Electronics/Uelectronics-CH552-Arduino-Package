@@ -1,2 +1,5 @@
 # Local release notes (not versioned; pasted into the GitHub release description)
 RELEASE_NOTES_*.md
+
+# VS Code local workspace settings
+.vscode/
