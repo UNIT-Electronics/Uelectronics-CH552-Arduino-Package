@@ -1,0 +1,6 @@
+# Ignorar archivos comprimidos .tar dentro de tools/
+tools/**/*.tar
+tools/**/*.tar.gz
+tools/**/*.tar.bz2
+tools/**/*.tar.xz
+tools/**/*.tgz

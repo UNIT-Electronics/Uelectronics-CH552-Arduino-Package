@@ -20,7 +20,7 @@
                     ],
                     "toolsDependencies": [
                         {
-                            "name": "MCS51Tools",
+                            "name": "devlabtools",
                             "version": "2023.10.10",
                             "packager": "Uelectronics"
                         },
@@ -46,7 +46,7 @@
                     ],
                     "toolsDependencies": [
                         {
-                            "name": "MCS51Tools",
+                            "name": "devlabtools",
                             "version": "2023.10.10",
                             "packager": "Uelectronics"
                         },
@@ -72,7 +72,7 @@
                     ],
                     "toolsDependencies": [
                         {
-                            "name": "MCS51Tools",
+                            "name": "devlabtools",
                             "version": "2023.10.10",
                             "packager": "Uelectronics"
                         },
@@ -98,7 +98,7 @@
                     ],
                     "toolsDependencies": [
                         {
-                            "name": "MCS51Tools",
+                            "name": "devlabtools",
                             "version": "2023.10.10",
                             "packager": "Uelectronics"
                         },
@@ -127,7 +127,7 @@
                     ],
                     "toolsDependencies": [
                         {
-                            "name": "MCS51Tools",
+                            "name": "devlabtools",
                             "version": "2023.10.10",
                             "packager": "Uelectronics"
                         },
@@ -147,7 +147,7 @@
 
             "tools" : [
                 {
-                    "name": "MCS51Tools",
+                    "name": "devlabtools",
                     "version": "2023.10.10",
                     "systems": [
                         {
