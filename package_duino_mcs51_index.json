@@ -21,7 +21,7 @@
                     "toolsDependencies": [
                         {
                             "name": "devlabtools",
-                            "version": "2023.10.10",
+                            "version": "2026.06.21",
                             "packager": "Uelectronics"
                         },
                         {
@@ -47,7 +47,7 @@
                     "toolsDependencies": [
                         {
                             "name": "devlabtools",
-                            "version": "2023.10.10",
+                            "version": "2026.06.21",
                             "packager": "Uelectronics"
                         },
                         {
@@ -73,7 +73,7 @@
                     "toolsDependencies": [
                         {
                             "name": "devlabtools",
-                            "version": "2023.10.10",
+                            "version": "2026.06.21",
                             "packager": "Uelectronics"
                         },
                         {
@@ -99,7 +99,7 @@
                     "toolsDependencies": [
                         {
                             "name": "devlabtools",
-                            "version": "2023.10.10",
+                            "version": "2026.06.21",
                             "packager": "Uelectronics"
                         },
                         {
@@ -128,7 +128,7 @@
                     "toolsDependencies": [
                         {
                             "name": "devlabtools",
-                            "version": "2023.10.10",
+                            "version": "2026.06.21",
                             "packager": "Uelectronics"
                         },
                         {
@@ -174,37 +174,6 @@
 
 
             "tools" : [
-                {
-                    "name": "devlabtools",
-                    "version": "2023.10.10",
-                    "systems": [
-                        {
-                            "host": "aarch64-linux-gnu",
-                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_aarch64-2023.10.10.tar.bz2",
-                            "archiveFileName": "ch55xduino-tools_aarch64-2023.10.10.tar.bz2",
-                            "checksum": "SHA-256:986950420d1ae77b3dd6ebfa7c4cc7dfc6240f1c551c3d6dbec7158ff7a47017",
-                            "size": "18884"
-                        },{
-                            "host": "x86_64-pc-linux-gnu",
-                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_linux64-2023.10.10.tar.bz2",
-                            "archiveFileName": "ch55xduino-tools_linux64-2023.10.10.tar.bz2",
-                            "checksum": "SHA-256:344d13237996f89150cf4b9f7ee9a675217f5bd83aad571162d0efedec3d7a2a",
-                            "size": "19333"
-                        },{
-                            "host": "x86_64-apple-darwin",
-                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_macosx-2023.10.10.tar.bz2",
-                            "archiveFileName": "ch55xduino-tools_macosx-2023.10.10.tar.bz2",
-                            "checksum": "SHA-256:1dde8c8ae4d46748cd14e2983c79effeac5444365c9cea7a70230cf030863b09",
-                            "size": "54385"
-                        },{
-                            "host": "i686-mingw32",
-                            "url": "https://github.com/DeqingSun/ch55xduino/releases/download/0.0.20/ch55xduino-tools_mingw32-2023.10.10.tar.bz2",
-                            "archiveFileName": "ch55xduino-tools_mingw32-2023.10.10.tar.bz2",
-                            "checksum": "SHA-256:423f8cf886bbb70a0fd388080a833c50c877da370fb48bd0d2c4d1d34ecec63f",
-                            "size": "698485"
-                        }
-                    ]
-                },
                 {
                     "name": "devlabtools",
                     "version": "2026.06.21",
