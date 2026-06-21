@@ -4,3 +4,6 @@ tools/**/*.tar.gz
 tools/**/*.tar.bz2
 tools/**/*.tar.xz
 tools/**/*.tgz
+
+# Release notes locales (no se versionan; se pegan en la descripción del release)
+RELEASE_NOTES_*.md
