@@ -167,8 +167,8 @@
                     ],
                     "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.6/devlab_ch55x_version_2026-06-21.tar.bz2",
                     "archiveFileName": "devlab_ch55x_version_2026-06-21.tar.bz2",
-                    "checksum": "SHA-256:c6f6eaa35ecf342479f06708368b156406cf24e2ba7730991538bff1951968ed",
-                    "size": "99218"
+                    "checksum": "SHA-256:c7a5e7e226fd7e9f5313ad26f32c80d7eebc774121abe87173b243783642988e",
+                    "size": "99399"
                 }
             ],
 
@@ -200,8 +200,8 @@
                             "host": "i686-mingw32",
                             "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.6/ch55xduino-tools_mingw32-2026.06.21.tar.bz2",
                             "archiveFileName": "ch55xduino-tools_mingw32-2026.06.21.tar.bz2",
-                            "checksum": "SHA-256:bde033034222917c6dd5029f1bb2c55f353cc02710c4f2786d5e20b7eee2f7ed",
-                            "size": "696737"
+                            "checksum": "SHA-256:e713f9c4c1cd40aa6a0082a277495dd6d8c10f0b131f1047801f89ca2fd05ade",
+                            "size": "696711"
                         }
                     ]
                 },

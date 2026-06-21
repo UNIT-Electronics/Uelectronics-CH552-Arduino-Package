@@ -22,9 +22,13 @@ TODAY = datetime.datetime.now().strftime("%Y-%m-%d")
 INFO_FILE = os.path.join(REPO_ROOT, "file_info.txt")
 
 
-def compress_folder(folder_path, output_filename):
+def compress_folder(folder_path, output_filename, arcname=None):
+    """Comprime folder_path en output_filename. arcname controla el nombre
+    del directorio raíz dentro del tar (por defecto, el basename de folder_path)."""
+    if arcname is None:
+        arcname = os.path.basename(folder_path)
     with tarfile.open(output_filename, "w:bz2") as tar:
-        tar.add(folder_path, arcname=os.path.basename(folder_path))
+        tar.add(folder_path, arcname=arcname)
 
 
 def calculate_sha256(file_path):
@@ -74,17 +78,29 @@ def main():
         print(f"[ch55x] Carpeta no encontrada: {ch55x_folder}")
 
     # 2) Tools mingw32 (Windows 32)
+    #
+    # Estructura requerida (igual que los archivos originales de DeqingSun):
+    #   tools/
+    #     win/...
+    #     wrapper/...
+    #
+    # La carpeta local es <repo>/tools/ch55xduino-tools_mingw32-<ver>/tools/...
+    # así que empaquetamos el subdirectorio "tools" usando arcname="tools".
     tools_folder = find_tools_folder()
     if tools_folder:
         version_tag = os.path.basename(tools_folder).split("-")[-1]
-        tools_archive = os.path.join(
-            REPO_ROOT,
-            "tools",
-            f"ch55xduino-tools_mingw32-{version_tag}.tar.bz2",
-        )
-        print(f"[tools] Comprimiendo {tools_folder} -> {tools_archive}")
-        compress_folder(tools_folder, tools_archive)
-        entries.append(build_entry("Tools mingw32 (Windows 32)", tools_archive))
+        inner_tools = os.path.join(tools_folder, "tools")
+        if not os.path.isdir(inner_tools):
+            print(f"[tools] Subcarpeta esperada no encontrada: {inner_tools}")
+        else:
+            tools_archive = os.path.join(
+                REPO_ROOT,
+                "tools",
+                f"ch55xduino-tools_mingw32-{version_tag}.tar.bz2",
+            )
+            print(f"[tools] Comprimiendo {inner_tools} -> {tools_archive}")
+            compress_folder(inner_tools, tools_archive, arcname="tools")
+            entries.append(build_entry("Tools mingw32 (Windows 32)", tools_archive))
     else:
         print("[tools] No se encontró carpeta ch55xduino-tools_mingw32-* en ./tools/")
 

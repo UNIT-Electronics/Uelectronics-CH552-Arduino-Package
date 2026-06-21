@@ -1,17 +1,17 @@
 Información de archivos comprimidos
-Generado: 2026-06-21T15:01:30
+Generado: 2026-06-21T15:44:39
 
 === Paquete ch55x ===
 Nombre del archivo comprimido: devlab_ch55x_version_2026-06-21.tar.bz2
 Ruta: devlab_ch55x_version_2026-06-21.tar.bz2
-Tamaño: 99218 bytes
+Tamaño: 99399 bytes
 Tipo: bz2
-SHA-256: c6f6eaa35ecf342479f06708368b156406cf24e2ba7730991538bff1951968ed
+SHA-256: c7a5e7e226fd7e9f5313ad26f32c80d7eebc774121abe87173b243783642988e
 
 === Tools mingw32 (Windows 32) ===
 Nombre del archivo comprimido: ch55xduino-tools_mingw32-2026.06.21.tar.bz2
 Ruta: tools/ch55xduino-tools_mingw32-2026.06.21.tar.bz2
-Tamaño: 696737 bytes
+Tamaño: 696711 bytes
 Tipo: bz2
-SHA-256: bde033034222917c6dd5029f1bb2c55f353cc02710c4f2786d5e20b7eee2f7ed
+SHA-256: e713f9c4c1cd40aa6a0082a277495dd6d8c10f0b131f1047801f89ca2fd05ade
 

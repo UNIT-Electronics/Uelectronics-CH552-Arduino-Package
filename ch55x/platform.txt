@@ -22,7 +22,7 @@ version=0.1.0
 # 	PreferencesData.removeAllKeysWithPrefix(prefix);
 # FIXME: find a solution to allow for uploads with manual installations.
 runtime.tools.sdcc.path={runtime.hardware.path}/tools/sdcc
-runtime.tools.MCS51Tools.path={runtime.hardware.path}/tools
+runtime.tools.devlabtools.path={runtime.hardware.path}/tools
 
 
 # CH55x compile variables
@@ -36,8 +36,8 @@ compiler.warning_flags.all=-Wp-Wall -V
 
 # Default "compiler.path" is correct, change only if you want to override the initial value
 compiler.path={runtime.tools.sdcc.path}/bin
-compiler.wrapper.path={runtime.tools.MCS51Tools.path}/wrapper
-compiler.wrapper.path.windows={runtime.tools.MCS51Tools.path}/win/busybox" ash "{runtime.tools.MCS51Tools.path}/wrapper
+compiler.wrapper.path={runtime.tools.devlabtools.path}/wrapper
+compiler.wrapper.path.windows={runtime.tools.devlabtools.path}/win/busybox" ash "{runtime.tools.devlabtools.path}/wrapper
 
 compiler.c.cmd=sdcc
 compiler.c.wrapper=sdcc.sh
@@ -71,7 +71,7 @@ compiler.ldflags=
 
 #we use mem file directly, because we don't need to use size command
 compiler.size.cmd=cat
-compiler.size.cmd.windows={runtime.tools.MCS51Tools.path}/win/busybox" cat "
+compiler.size.cmd.windows={runtime.tools.devlabtools.path}/win/busybox" cat "
 
 compiler.systemincludes="-I{compiler.syslibs.stdlib.path}/include"
 
@@ -134,10 +134,10 @@ recipe.preproc.macros="{compiler.wrapper.path}/{compiler.cpp.cmd}.sh" "{compiler
 
 tools.vnproch55x_usb.cmd=vnproch55x
 # these lines are for manual install. For board manager installs they get converted to use
-# {runtime.tools.MCS51Tools.path} instead of {runtime.hardware.path}/tools
-tools.vnproch55x_usb.path={runtime.tools.MCS51Tools.path}/linux
-tools.vnproch55x_usb.path.windows={runtime.tools.MCS51Tools.path}/win
-tools.vnproch55x_usb.path.macosx={runtime.tools.MCS51Tools.path}/macosx
+# {runtime.tools.devlabtools.path} instead of {runtime.hardware.path}/tools
+tools.vnproch55x_usb.path={runtime.tools.devlabtools.path}/linux
+tools.vnproch55x_usb.path.windows={runtime.tools.devlabtools.path}/win
+tools.vnproch55x_usb.path.macosx={runtime.tools.devlabtools.path}/macosx
 
 tools.vnproch55x_usb.upload.params.verbose=
 tools.vnproch55x_usb.upload.params.quiet=
@@ -146,9 +146,9 @@ tools.vnproch55x_usb.upload.pattern="{path}/{cmd}" -r 2 -t {build.mcu} -c {uploa
 # ----
 
 tools.vnproch55x_serial.cmd=vnproch55x
-tools.vnproch55x_serial.path={runtime.tools.MCS51Tools.path}/linux
-tools.vnproch55x_serial.path.windows={runtime.tools.MCS51Tools.path}/win
-tools.vnproch55x_serial.path.macosx={runtime.tools.MCS51Tools.path}/macosx
+tools.vnproch55x_serial.path={runtime.tools.devlabtools.path}/linux
+tools.vnproch55x_serial.path.windows={runtime.tools.devlabtools.path}/win
+tools.vnproch55x_serial.path.macosx={runtime.tools.devlabtools.path}/macosx
 
 tools.vnproch55x_serial.upload.params.verbose=
 tools.vnproch55x_serial.upload.params.quiet=
