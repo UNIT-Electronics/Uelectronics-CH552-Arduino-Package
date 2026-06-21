@@ -1,9 +1,2 @@
-# Ignorar archivos comprimidos .tar dentro de tools/
-tools/**/*.tar
-tools/**/*.tar.gz
-tools/**/*.tar.bz2
-tools/**/*.tar.xz
-tools/**/*.tgz
-
-# Release notes locales (no se versionan; se pegan en la descripción del release)
+# Local release notes (not versioned; pasted into the GitHub release description)
 RELEASE_NOTES_*.md
