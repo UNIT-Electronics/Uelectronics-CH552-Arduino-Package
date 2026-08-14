@@ -131,9 +131,11 @@ recipe.preproc.includes="{compiler.wrapper.path}/{compiler.cpp.wrapper}" "{compi
 # Arduino CLI 1.5.x (bundled with Arduino IDE 2.3.10) names the merged sketch
 # *.ino.cpp.merged. Invoke SDCC directly because older wrappers do not
 # recognize that extension as C++ input. Do not reuse compiler.cpp.flags here:
-# -c and -MMD are invalid for the /dev/null library-discovery pass.
-preproc.macros.flags=-E
-recipe.preproc.macros="{compiler.path}/{compiler.cpp.cmd}" -Ddouble=float -DUSE_STDINT -D__PROG_TYPES_COMPAT__ --model-large --int-long-reent {compiler.warning_flags} {preproc.macros.flags} -x c --include dummy_variable_main.h -mmcs51 -D{build.mcu} -DF_CPU={build.f_cpu} -DF_EXT_OSC={build.f_oscillator_external} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} {compiler.systemincludes} "{source_file}" -o "{preprocessed_file_path}"
+# -c and -MMD are invalid for the /dev/null library-discovery pass. SDCC
+# also reports the dependency filename as a second source, so suppress that
+# non-fatal warning during preprocessing.
+preproc.macros.flags=-E --disable-warning 120
+recipe.preproc.macros="{compiler.path}/{compiler.cpp.cmd}" -Ddouble=float -DUSE_STDINT -D__PROG_TYPES_COMPAT__ --model-large --int-long-reent {compiler.warning_flags} {preproc.macros.flags} -x c --include dummy_variable_main.h -mmcs51 -D{build.mcu} -DF_CPU={build.f_cpu} -DF_EXT_OSC={build.f_oscillator_external} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} {compiler.systemincludes} "{source_file}" -o "{preprocessed_file_path}" -MF "{build.path}/{build.project_name}.preproc.d"
 
 
 # vnproch55x
