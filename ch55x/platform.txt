@@ -41,7 +41,10 @@ compiler.wrapper.path.windows={runtime.tools.devlabtools.path}/win/busybox" ash 
 
 compiler.c.cmd=sdcc
 compiler.c.wrapper=sdcc.sh
-compiler.c.flags=-MMD -c -Ddouble=float -DUSE_STDINT -D__PROG_TYPES_COMPAT__ --model-large  --int-long-reent {compiler.warning_flags}
+# Do not enable SDCC dependency files here. Arduino CLI uses this recipe with
+# /dev/null as the object during library discovery; -MMD would try to create
+# /dev/null.d and fail with a permissions error.
+compiler.c.flags=-c -Ddouble=float -DUSE_STDINT -D__PROG_TYPES_COMPAT__ --model-large  --int-long-reent {compiler.warning_flags}
 compiler.c.elf.flags=--code-size {upload.maximum_size} --xram-size {upload.maximum_data_size} --xram-loc {upload.xdata_location}
 
 compiler.c.elf.cmd=sdcc
