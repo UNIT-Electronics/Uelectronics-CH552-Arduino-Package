@@ -137,8 +137,21 @@ recipe.preproc.includes="{compiler.wrapper.path}/{compiler.cpp.wrapper}" "{compi
 # -c and -MMD are invalid for the /dev/null library-discovery pass. SDCC
 # also reports the dependency filename as a second source, so suppress that
 # non-fatal warning during preprocessing.
+#
+# Arduino CLI 1.3+ additionally appends its own "-MMD -MF <sketch>.libsdetect.d"
+# to this recipe to cache header discovery, assuming GCC semantics where the
+# last -MF on the line wins. SDCC's sdcpp instead derives a dependency
+# filename from -o as soon as it sees -MMD (here object_file is /dev/null),
+# and aborts trying to open /dev/null.d before it ever reaches the later,
+# valid -MF. Route through a small filter wrapper that strips -MMD/-MF
+# (ours and whatever Arduino CLI appends) before invoking SDCC; we don't
+# need the generated dependency file for this preprocessing-only pass.
+compiler.preproc.wrapper.path={runtime.platform.path}/wrapper-local
+compiler.preproc.wrapper.path.windows={runtime.tools.devlabtools.path}/win/busybox" ash "{runtime.platform.path}/wrapper-local
+compiler.preproc.wrapper=sdcc-preproc-filter.sh
+
 preproc.macros.flags=-E --disable-warning 120
-recipe.preproc.macros="{compiler.path}/{compiler.cpp.cmd}" -Ddouble=float -DUSE_STDINT -D__PROG_TYPES_COMPAT__ --model-large --int-long-reent {compiler.warning_flags} {preproc.macros.flags} -x c --include dummy_variable_main.h -mmcs51 -D{build.mcu} -DF_CPU={build.f_cpu} -DF_EXT_OSC={build.f_oscillator_external} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} {compiler.systemincludes} "{source_file}" -o "{preprocessed_file_path}" -MF "{build.path}/{build.project_name}.preproc.d"
+recipe.preproc.macros="{compiler.preproc.wrapper.path}/{compiler.preproc.wrapper}" "{compiler.path}/{compiler.cpp.cmd}" -Ddouble=float -DUSE_STDINT -D__PROG_TYPES_COMPAT__ --model-large --int-long-reent {compiler.warning_flags} {preproc.macros.flags} -x c --include dummy_variable_main.h -mmcs51 -D{build.mcu} -DF_CPU={build.f_cpu} -DF_EXT_OSC={build.f_oscillator_external} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} {compiler.systemincludes} "{source_file}" -o "{preprocessed_file_path}" -MF "{build.path}/{build.project_name}.preproc.d"
 
 
 # vnproch55x
