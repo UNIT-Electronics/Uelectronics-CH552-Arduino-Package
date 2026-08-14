@@ -326,6 +326,36 @@
                     "archiveFileName": "devlab_ch55x_version_0.0.11.tar.bz2",
                     "checksum": "SHA-256:cb0d53a889fffd626b8f84688a2dbb3c26ee7d433bc5605cb35e8e02612c838e",
                     "size": "100293"
+                },
+                {
+                    "name": "Devlab_CH55x",
+                    "architecture": "mcs51",
+                    "version": "0.0.12",
+                    "category": "Unit Electronics",
+                    "help": {
+                        "online": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package"
+                    },
+                    "boards": [
+                        {
+                            "name": "CH552 Board"
+                        }
+                    ],
+                    "toolsDependencies": [
+                        {
+                            "name": "devlabtools",
+                            "version": "2026.06.21",
+                            "packager": "Uelectronics"
+                        },
+                        {
+                            "name": "sdcc",
+                            "version": "build.13407_4",
+                            "packager": "Uelectronics"
+                        }
+                    ],
+                    "url": "https://github.com/UNIT-Electronics/Uelectronics-CH552-Arduino-Package/releases/download/v0.0.12/devlab_ch55x_version_0.0.12.tar.bz2",
+                    "archiveFileName": "devlab_ch55x_version_0.0.12.tar.bz2",
+                    "checksum": "SHA-256:cb0d53a889fffd626b8f84688a2dbb3c26ee7d433bc5605cb35e8e02612c838e",
+                    "size": "100293"
                 }
             ],
             "tools": [
