@@ -124,9 +124,16 @@ recipe.size.regex.data=^(?:\s+EXTERNAL RAM)\s+0x[A-Fa-f0-9]+\s+0x[A-Fa-f0-9]+\s+
 
 ## Preprocessor (re11, re12)
 preproc.includes.flags=-M -MG -MP
+# Keep the legacy includes recipe for Arduino IDE versions that still use it.
+# The property name is compiler.wrapper.path (not compiler.path.wrapper).
 recipe.preproc.includes="{compiler.wrapper.path}/{compiler.cpp.wrapper}" "{compiler.path}/{compiler.cpp.cmd}" re11 {compiler.cpp.flags} {preproc.includes.flags} -mmcs51 -D{build.mcu} -DF_CPU={build.f_cpu} -DF_EXT_OSC={build.f_oscillator_external} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}"
-preproc.macros.flags=-E -MC
-recipe.preproc.macros="{compiler.wrapper.path}/{compiler.cpp.cmd}.sh" "{compiler.path}/{compiler.cpp.cmd}" "{source_file}" "{preprocessed_file_path}" re12 {compiler.cpp.flags} {preproc.macros.flags} -mmcs51 -D{build.mcu} -DF_CPU={build.f_cpu} -DF_EXT_OSC={build.f_oscillator_external} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} {compiler.systemincludes}
+
+# Arduino CLI 1.5.x (bundled with Arduino IDE 2.3.10) requires this recipe to
+# write the generated preprocessed source to {preprocessed_file_path}. The
+# wrapper keeps the re12 calling convention used by older IDE releases and
+# handles the platform-specific SDCC invocation on Linux and Windows.
+preproc.macros.flags=-E
+recipe.preproc.macros="{compiler.wrapper.path}/{compiler.cpp.wrapper}" "{compiler.path}/{compiler.cpp.cmd}" "{source_file}" "{preprocessed_file_path}" re12 {compiler.cpp.flags} {preproc.macros.flags} -mmcs51 -D{build.mcu} -DF_CPU={build.f_cpu} -DF_EXT_OSC={build.f_oscillator_external} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} {compiler.systemincludes}
 
 
 # vnproch55x
@@ -153,4 +160,3 @@ tools.vnproch55x_serial.path.macosx={runtime.tools.devlabtools.path}/macosx
 tools.vnproch55x_serial.upload.params.verbose=
 tools.vnproch55x_serial.upload.params.quiet=
 tools.vnproch55x_serial.upload.pattern="{path}/{cmd}" -s {serial.port} -t {build.mcu} "{build.path}/{build.project_name}.hex"
-

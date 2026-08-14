@@ -1,0 +1,113 @@
+name: Release Arduino package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versión nueva; vacío = incrementar patch automáticamente"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-arduino-package
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Determine package version and tag
+        id: version
+        env:
+          VERSION_INPUT: ${{ inputs.version }}
+        run: |
+          if [ -n "${VERSION_INPUT}" ]; then
+            VERSION="${VERSION_INPUT}"
+          else
+            VERSION=$(python - <<'PY'
+          import json
+          import re
+          import subprocess
+          from pathlib import Path
+
+          index = json.loads(Path("package_duino_mcs51_index.json").read_text())
+          platforms = next(
+              package["platforms"]
+              for package in index["packages"]
+              if package["name"] == "Uelectronics"
+          )
+          versions = [
+              tuple(map(int, platform["version"].split(".")))
+              for platform in platforms
+          ]
+          for tag in subprocess.check_output(["git", "tag", "--list", "v*"]).decode().splitlines():
+              match = re.fullmatch(r"v(\d+)\.(\d+)\.(\d+)", tag)
+              if match:
+                  versions.append(tuple(map(int, match.groups())))
+          latest = max(versions)
+          print(f"{latest[0]}.{latest[1]}.{latest[2] + 1}")
+          PY
+            )
+          fi
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "tag=v${VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "Publishing package version ${VERSION} with tag v${VERSION}"
+
+      - name: Validate tag does not already exist
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          if git rev-parse --verify "refs/tags/${TAG}" >/dev/null 2>&1; then
+            echo "The tag ${TAG} already exists. Choose a new package version." >&2
+            exit 1
+          fi
+
+      - name: Build archive and update package index
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          python scripts/release_package.py \
+            --version "${VERSION}" \
+            --tag "v${VERSION}" \
+            --repository "UNIT-Electronics/Uelectronics-CH552-Arduino-Package" \
+            --output-dir dist
+
+      - name: Commit updated package index
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package_duino_mcs51_index.json
+          git commit -m "Release Devlab_CH55x v${VERSION}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Create and push tag
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          git tag -a "${TAG}" -m "Release Devlab_CH55x ${TAG}"
+          git push origin "${TAG}"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release create "${TAG}" \
+            "dist/devlab_ch55x_version_${VERSION}.tar.bz2" \
+            --title "Devlab_CH55x ${TAG}" \
+            --generate-notes
