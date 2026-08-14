@@ -24,10 +24,10 @@ Para instalar, sigue estos pasos:
 
 ## Publicar una nueva versión
 
-Las versiones se publican automáticamente desde GitHub Actions:
+Las versiones se publican automáticamente desde GitHub Actions cuando se hace push a `main`. También se puede ejecutar manualmente:
 
 1. Abre la pestaña **Actions** del repositorio.
-2. Selecciona **Release Arduino package** y pulsa **Run workflow**.
+2. Selecciona **Release Arduino package** y pulsa **Run workflow** si necesitas elegir la versión.
 3. Deja vacío el campo de versión para incrementar automáticamente el patch (`0.0.6` → `0.0.7`), o escribe una versión concreta. El cálculo considera tanto el índice como los tags existentes.
 
 El workflow genera el archivo `.tar.bz2`, calcula su tamaño y checksum, actualiza el índice del Administrador de Placas, crea el tag correspondiente (`0.0.7` → `v0.0.7`) y publica una Release. Las versiones anteriores se conservan. No reutilices un número de versión o tag ya publicado.

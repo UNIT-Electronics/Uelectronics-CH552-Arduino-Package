@@ -1,6 +1,11 @@
 name: Release Arduino package
 
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - package_duino_mcs51_index.json
   workflow_dispatch:
     inputs:
       version:
